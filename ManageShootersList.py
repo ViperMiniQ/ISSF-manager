@@ -10,7 +10,6 @@ from tkinter import messagebox
 import ComboboxBasicManager
 import Fonts
 from dbcommands_rewrite import DBGetter, DBRemover, DBMisc, DBUpdate
-import tkinter.ttk as ttk
 
 
 class ShootersList(ComboboxBasicManager.ItemBasicManager):
@@ -151,7 +150,7 @@ class ShootersNotificationSetter(tk.Frame):
         for n in notif_settings:
             self.old_values[f"{n['Ime']} {n['Prezime']}"]["id"] = n['id']
 
-        self.btn_save_changes = ttk.Button(
+        self.btn_save_changes = tk.Button(
             self,
             text="Spremi promjene",
             bg="lime",

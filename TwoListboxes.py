@@ -12,6 +12,7 @@ class TwoListboxes(tk.Frame):
 
         self.last_selected_item_index_listbox_left = -1
         self.last_selected_item_index_listbox_right = -1
+        self.last_action = ""
 
         self.font = font
         if not font:
@@ -474,6 +475,7 @@ class TwoListboxes(tk.Frame):
             last_position_in_right_lbx = len(self.lbx_right_items)
             self.lbx_right_items[selected_item] = last_position_in_right_lbx + 1
             self.lbx_left_items.pop(selected_item)
+            self.last_action = "right"
             self.notify()
 
     def move_left(self):
@@ -488,7 +490,7 @@ class TwoListboxes(tk.Frame):
             last_position_in_left_lbx = len(self.lbx_left_items)
             self.lbx_left_items[selected_item] = last_position_in_left_lbx + 1
             self.lbx_right_items.pop(selected_item)
-
+            self.last_action = "left"
             self.notify()
 
     def move_up(self, *args):
@@ -510,6 +512,7 @@ class TwoListboxes(tk.Frame):
                 self.lbx_right.insert(pos - 1, text)
             self.lbx_right.select_set(pos - 1)
             self.last_selected_item_index_listbox_right = self.lbx_right.curselection()[0]
+            self.last_action = "up"
             self.notify()
         except:
             pass
@@ -534,6 +537,7 @@ class TwoListboxes(tk.Frame):
                 self.lbx_right.insert(pos + 1, text)
             self.lbx_right.selection_set(pos + 1)
             self.last_selected_item_index_listbox_right = self.lbx_right.curselection()[0]
+            self.last_action = "down"
             self.notify()
         except:
             pass

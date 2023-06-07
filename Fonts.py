@@ -52,7 +52,12 @@ def configure_fonts2_for_save(current):
         if not isinstance(value, dict):
             try:
                 font_settings = _get_font_settings(current["font"])
-                divisor = int(KeepAspectRatio.x / font_settings["size"])
+
+                if ApplicationProperties.RESPECT_FONTS_DIVISOR:
+                    divisor = int(KeepAspectRatio.x / font_settings["size"])
+                else:
+                    divisor = current['divisor']
+
                 for key2 in list(current.keys()):
                     current.pop(key2)
                 current.update(font_settings)

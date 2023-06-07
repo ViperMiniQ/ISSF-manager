@@ -232,6 +232,8 @@ class ModifyResultsShooters(TwoListboxesManipular):
     def on_update(self):
         self.save_shooter_states()
         self.load_items()
+        if self.twolistboxes.last_action == "up" or self.twolistboxes.last_action == "down":
+            self.twolistboxes.select_item("right", self.twolistboxes.last_selected_item_index_listbox_right)
         Changes.set_shooters()
 
     def load_items(self):
@@ -310,6 +312,8 @@ class ModifyResultsTargets(TwoListboxesManipular):
             self.on_add()
         self.save_target_states()
         self.load_items()
+        if self.twolistboxes.last_action == "up" or self.twolistboxes.last_action == "down":
+            self.twolistboxes.select_item("right", self.twolistboxes.last_selected_item_index_listbox_right)
         Changes.set_targets()
 
     def load_items(self):
@@ -376,7 +380,8 @@ class ModifyResultsDisciplines(TwoListboxesManipular):
             self.on_add()
         self.save_discipline_states()
         self.load_items()
-        self.twolistboxes.select_item("right", self.twolistboxes.last_selected_item_index_listbox_right)
+        if self.twolistboxes.last_action == "up" or self.twolistboxes.last_action == "down":
+            self.twolistboxes.select_item("right", self.twolistboxes.last_selected_item_index_listbox_right)
         Changes.set_disciplines()
 
     def load_items(self):
@@ -443,6 +448,8 @@ class ModifyResultsPrograms(TwoListboxesManipular):
             self.on_add()
         self.save_programs_states()
         self.load_items()
+        if self.twolistboxes.last_action == "up" or self.twolistboxes.last_action == "down":
+            self.twolistboxes.select_item("right", self.twolistboxes.last_selected_item_index_listbox_right)
         Changes.set_programs()
 
     def load_items(self):
@@ -479,6 +486,8 @@ class ModifyResultsCompetitions(TwoListboxesManipular):
 
     def on_update(self):
         self.save_competitions_states()
+        if self.twolistboxes.last_action == "up" or self.twolistboxes.last_action == "down":
+            self.twolistboxes.select_item("right", self.twolistboxes.last_selected_item_index_listbox_right)
         Changes.set_competitions()
 
     def get_competition_description(self, competition_id: int):

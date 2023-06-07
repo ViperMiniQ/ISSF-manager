@@ -8,7 +8,7 @@ import Notification
 import Fonts
 import sqlTypes
 from Calendar import NotificationCalendar
-from datetime import datetime
+from datetime import datetime, timedelta
 import KeepAspectRatio
 from CustomWidgets import MenuTreeview
 import ApplicationProperties
@@ -31,6 +31,8 @@ class Start(tk.Frame):
         self.txt_doctor_expired = "Liječnički je istekao"
         self.txt_NPIN_expires = "Osobna ističe"
         self.txt_NPIN_expired = "Osobna je istekla"
+        self.txt_air_cylinder_expires = "Rok uporabe zračnog cilindra pri kraju"
+        self.txt_air_cylinder_expired = "Rok uporabe zračnog cilindra je istekao"
 
         self.doctor_expires = []
         self.doctor_expired = []
@@ -38,6 +40,7 @@ class Start(tk.Frame):
         self.NPIN_expired = []
         self.others = []
         self.birthdays = []
+        self.air_cylinders = []
 
         self.upcoming_competitions = []
         self.elapsed_competitions = []
@@ -45,6 +48,7 @@ class Start(tk.Frame):
         self.doctor_day = 30
         self.NPIN_day = 30
         self.competitions_day = 30
+        self.air_cylinder_day = 180
         self.reminders = {}
 
         self.load_colors()
@@ -53,13 +57,6 @@ class Start(tk.Frame):
         self.calendar_notifications = []
 
         self.font = Fonts.fonts2["StartPage"]["labels"]["font"]
-
-        self.notifications_font = {
-            "weapon": Fonts.fonts2["Notifications"]["weapon"]["font"],
-            "shooter": Fonts.fonts2["Notifications"]["shooter"]["font"],
-            "other": Fonts.fonts2["Notifications"]["other"]["font"],
-            "competition": Fonts.fonts2["Notifications"]["competition"]["font"]
-        }
 
         self.frame_control_buttons = tk.Frame(self)
         self.frame_reminders = ScrollableFrame.Vertical(self)
@@ -127,6 +124,25 @@ class Start(tk.Frame):
 
     def load_colors(self):
         self.reload_reminders()
+
+    def load_air_cylinders_to_expire(self):
+        air_cylinders = DBGetter.get_air_cylinders()
+        for air_cylinder in air_cylinders:
+            date = Tools.string_to_datetime_date(air_cylinder['date_expire'])
+            if date < ApplicationProperties.CURRENT_DATE:
+                continue
+            if date > ApplicationProperties.CURRENT_DATE + timedelta(days=self.air_cylinder_day):
+                continue
+            cylinder_expire: sqlTypes.Notification = {
+                "id": 0,
+                "title": f"{air_cylinder['manufacturer']} ({air_cylinder['serial_no']})",
+                "text": self.txt_air_cylinder_expires,
+                "date": air_cylinder['date_expire'],
+                "bg": "grey",
+                "fg": "black",
+                "type": "Zračni cilindar"
+            }
+            self.air_cylinders.append(cylinder_expire)
 
     def load_NPIN_about_to_expire(self):
         shooters_with_NPIN_about_to_expire = DBGetter.get_shooter_with_NPIN_about_to_expire(self.NPIN_day)
@@ -278,6 +294,8 @@ class Start(tk.Frame):
         self.upcoming_competitions.clear()
         self.elapsed_competitions.clear()
 
+        self.air_cylinders.clear()
+
     def refresh_reminders_dicts(self):
         self.load_doctor_expired()
         self.frame_info.set_row_number("Liječnički istekao", len(self.doctor_expired))
@@ -293,6 +311,8 @@ class Start(tk.Frame):
         self.frame_info.set_row_number("Drugo", len(self.others))
         self.load_birthdays()
         self.frame_info.set_row_number("Rođendan", len(self.birthdays))
+        self.load_air_cylinders_to_expire()
+        self.frame_info.set_row_number("Zračni cilindar", len(self.air_cylinders))
 
     def update_reminders(self):
         self.load_notifications()
@@ -317,6 +337,8 @@ class Start(tk.Frame):
             all_reminders += self.others
         if states["Rođendan"]:
             all_reminders += self.birthdays
+        if states["Zračni cilindar"]:
+            all_reminders += self.air_cylinders
         self.reminders = sorted(
             all_reminders,
             key=lambda d: d['date']
@@ -450,6 +472,7 @@ class StarPageList(tk.Frame):
         self.tree.insert("", tk.END, "Strijelci", text="Strijelci", tags="font", values=start_values)
         self.tree.insert("", tk.END, "Oružje", text="Oružje", tags="font", values=start_values)
         self.tree.insert("", tk.END, "Natjecanja", text="Natjecanja", tags="font", values=start_values)
+        self.tree.insert("", tk.END, "Zračni cilindar", text="Zračni cilindar", tags="font", values=start_values)
         self.tree.insert("", tk.END, "Drugo", text="Drugo", tags="font", values=start_values)
 
         self.tree.insert("Strijelci", tk.END, "Osobna ističe", text="Osobna ističe", tags="child_font", values=start_values)
@@ -495,7 +518,8 @@ class StarPageList(tk.Frame):
             "Liječnički istekao": True if self.tree.set(item="Liječnički istekao", column="active") == self.selected_symbol else False,
             "Natjecanja": True if self.tree.set(item="Natjecanja", column="active") == self.selected_symbol else False,
             "Drugo": True if self.tree.set(item="Drugo", column="active") == self.selected_symbol else False,
-            "Rođendan": True if self.tree.set(item="Rođendan", column="active") == self.selected_symbol else False
+            "Rođendan": True if self.tree.set(item="Rođendan", column="active") == self.selected_symbol else False,
+            "Zračni cilindar": True if self.tree.set(item="Zračni cilindar", column="active") == self.selected_symbol else False
         }
 
     def notify(self):

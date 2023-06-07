@@ -190,3 +190,7 @@ def remove_weapon_images(weapon_id: int):
     for path in os.listdir(ApplicationProperties.WEAPON_IMAGES_DIR):
         if path[0:len(str(weapon_id)) + 1] == str(weapon_id) + "_":
             os.remove(path)
+
+
+def string_to_datetime_date(date: str, date_format: str = sql_date_format):
+    return datetime.strptime(date, date_format).date()
