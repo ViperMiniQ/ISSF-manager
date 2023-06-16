@@ -53,6 +53,7 @@ import ctypes
 import Colors
 #from ModeCompetition import ModeCompetition
 from ClubInfo import ClubInfo
+from HTMLResults import HTMLResultsToplevel
 from dbcommands_rewrite import DBConnector, DBSetter, DBGetter, DBMisc
 
 if ApplicationProperties.PLATFORM == "WINDOWS":
@@ -216,6 +217,7 @@ class GUI(tk.Tk):
 
         self.bind("<Control-Key-r>", lambda event: self.export_oruzje_to_csv())
         self.bind("<Control-Key-d>", lambda event: self.export_dnevnik_to_csv())
+        self.bind("<Control-Key-h>", lambda event: HTMLResultsToplevel(self))
 
     @staticmethod
     def export_dnevnik_to_csv():

@@ -2269,27 +2269,14 @@ class DBGetter:
 
     @classmethod
     def get_program_details(cls, program) -> sqlTypes.Program:
-        if isinstance(program, int):
-            select = f"""
-            SELECT 
-                naziv, -- 0
-                opis, -- 1
-                id_program -- 2
-            FROM programi
-            WHERE id_program={program}
-            """
-        elif isinstance(program, str):
-            select = f"""
-            SELECT 
-                naziv, -- 0
-                opis, -- 1
-                id_program -- 2
-            FROM programi
-            WHERE naziv='{program}'
-            """
-        else:
-            return {}
-
+        select = f"""
+        SELECT 
+            naziv, -- 0
+            opis, -- 1
+            id_program -- 2
+        FROM programi
+        WHERE id_program={program}
+        """
         data = DBManipulator.fetch_row(select)
 
         if not data[0]:
@@ -2303,26 +2290,14 @@ class DBGetter:
 
     @classmethod
     def get_discipline_details(cls, discipline) -> sqlTypes.Discipline:
-        if isinstance(discipline, int):
-            select = f"""
-            SELECT 
-                naziv, -- 0
-                opis, -- 1
-                id_disciplina -- 2
-            FROM discipline
-            WHERE id_disciplina={discipline}
-            """
-        elif isinstance(discipline, str):
-            select = f"""
-                SELECT 
-                    naziv, -- 0
-                    opis, -- 1
-                    id_disciplina -- 2
-                FROM discipline
-                WHERE naziv='{discipline}'
-            """
-        else:
-            return {}
+        select = f"""
+        SELECT 
+            naziv, -- 0
+            opis, -- 1
+            id_disciplina -- 2
+        FROM discipline
+        WHERE id_disciplina={discipline}
+        """
 
         data = DBManipulator.fetch_row(select)
 

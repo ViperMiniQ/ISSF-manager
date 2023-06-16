@@ -7,7 +7,7 @@ from dbcommands_rewrite import DBUpdate, DBAdder
 
 
 class AddNotification(tk.Toplevel):
-    def __init__(self, master, date=None, title: str = ""):
+    def __init__(self, master, date=None, title: str = "", lock_title: bool = False):
         tk.Toplevel.__init__(self, master)
         self.dictionary = {}
 
@@ -105,6 +105,9 @@ class AddNotification(tk.Toplevel):
             self.date.set_date(date)
         if title:
             self.ent_title.insert(0, title)
+
+        if lock_title:
+            self.ent_title.configure(state="disabled")
 
         self.frame_txt.pack_propagate(False)
         self.grid_propagate(False)

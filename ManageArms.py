@@ -133,7 +133,8 @@ class WeaponsCommands(tk.Frame):
         weapon_details = DBGetter.get_weapon_details(weapon_id=ManageArms.current_weapon_id)
         notification = Notification.AddNotification(
             self,
-            title=f"{weapon_details['manufacturer']} {weapon_details['model']} ({weapon_details['serial_no']})"
+            title=f"{weapon_details['manufacturer']} {weapon_details['model']} ({weapon_details['serial_no']})",
+            lock_title=True
         )
         notification.grab_set()
         notification.wait_window()
