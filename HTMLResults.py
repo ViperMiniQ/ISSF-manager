@@ -79,30 +79,36 @@ class HTMLResults(tk.Frame):
             for key in keys_to_remove:
                 result.pop(key)
 
-    def _draw_as_table(self, df, pagesize):
+    def _draw_as_table(self, df: pd.DataFrame, pagesize):
         alternating_colors = [['white'] * len(df.columns), ['lightgray'] * len(df.columns)] * len(df)
         alternating_colors = alternating_colors[:len(df)]
         fig, ax = plt.subplots(figsize=pagesize)
         ax.axis('tight')
         ax.axis('off')
-        ax.table(cellText=df.values,
-                 rowLabels=df.index,
-                 colLabels=df.columns,
-                 rowColours=['lightblue'] * len(df),
-                 colColours=['lightblue'] * len(df.columns),
-                 cellColours=alternating_colors,
-                 loc='center'
+        table = ax.table(
+            cellText=df.values,
+            rowLabels=df.index + 1,
+            colLabels=df.columns,
+            rowColours=['lightblue'] * len(df),
+            colColours=['lightblue'] * len(df.columns),
+            cellColours=alternating_colors,
+            loc='center',
+            cellLoc='center'
         )
+        table.auto_set_font_size(False)
+        table.set_fontsize(11)
+        table.scale(1, 1.3)
+        table.auto_set_column_width(col=list(range(len(df.columns)))) # Provide integer list of columns to adjust
         return fig
 
-    def _save_results_to_file(self, pdfpages: PdfPages, start_index: int, stop_index: int, rows_per_page: int = 30, pagesize=(8.3, 11.7)):
+    def _save_results_to_file(self, pdfpages: PdfPages, start_index: int, stop_index: int, rows_per_page: int = 25, pagesize=(8.3, 11.7)):
         for i in range(0, (stop_index - start_index) // rows_per_page + 1, 1):
-            print(start_index, stop_index)
-            print(self.results[start_index + (i * rows_per_page)
-                               :
-                               stop_index if stop_index < start_index + ((i+1) * rows_per_page) else start_index + ((i+1) * rows_per_page)
-                                ]
-            )
+            # print(start_index, stop_index)
+            # print(self.results[start_index + (i * rows_per_page)
+            #                    :
+            #                    stop_index if stop_index < start_index + ((i+1) * rows_per_page) else start_index + ((i+1) * rows_per_page)
+            #                     ]
+            # )
             pdfpages.savefig(
                 self._draw_as_table(
                     pd.DataFrame(
@@ -140,24 +146,39 @@ class HTMLResults(tk.Frame):
     def dataframe_to_pdf(self, df, filename, rows_per_page: int = 30, pagesize=(8.3, 11.7)):
         file = PdfPages(filename)
         month_for_extraction = Tools.SQL_date_to_datetime_date(self.results[0]['Datum']).month
-        start = 0
+        year_for_extraction = Tools.SQL_date_to_datetime_date(self.results[0]['Datum']).year
+        start_index_month = 0
+        start_index_year = 0
         for i, result in enumerate(self.results):
             if Tools.SQL_date_to_datetime_date(result['Datum']).month != month_for_extraction:
-                r, d = self.get_results_to_dates(start, i)
+                r, d = self.get_results_to_dates(start_index_month, i)
                 self._save_plot_to_file(
                     file=file,
                     results=r,
-                    dates=d
+                    dates=d,
+                    title=f"{self.results[0]['Strijelac']} - {month_for_extraction}. mjesec {Tools.SQL_date_to_datetime_date(self.results[start_index_month]['Datum']).year}."
                 )
 
                 self._save_results_to_file(
                     pdfpages=file,
-                    start_index=start,
+                    start_index=start_index_month,
                     stop_index=i
                 )
 
                 month_for_extraction = Tools.SQL_date_to_datetime_date(result['Datum']).month
-                start = i
+                start_index_month = i
+
+            if Tools.SQL_date_to_datetime_date(result['Datum']).year != year_for_extraction:
+                r, d = self.get_results_to_dates(start_index_year, i)
+                self._save_plot_to_file(
+                    file=file,
+                    results=r,
+                    dates=d,
+                    title=f"{Tools.SQL_date_to_datetime_date(self.results[start_index_year]['Datum']).year}. godina"
+                )
+
+                year_for_extraction = Tools.SQL_date_to_datetime_date(result['Datum']).year
+                start_index_year = i
         file.close()
 
 

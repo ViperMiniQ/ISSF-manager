@@ -415,6 +415,7 @@ class WeaponsList(ComboboxBasicManager.ItemBasicManager):
 
     def _add_new(self):
         new_shooter = NewWeapon(self)
+        new_shooter.focus()
         new_shooter.wait_window()
         Changes.call_refresh_weapons()
 
@@ -471,7 +472,7 @@ class WeaponsDetails(tk.Frame):
                                                  width=600)
         self.frame_trigger = NewWeaponTriggerFrame(self.frame_main.scrollable_frame, bd=2, relief="solid", height=120,
                                                    width=600)
-        self.frame_note = WeaponNote(self.frame_main.scrollable_frame, bd=2, relief="solid", height=100)
+        self.frame_note = WeaponNote(self.frame_main.scrollable_frame, bd=2, relief="solid", height=50)
 
         self.frame_main.pack(side="top", expand=True, fill="both")
 
@@ -631,7 +632,7 @@ class NewWeapon(tk.Toplevel):
         self.frame_main.pack(side="top", fill="both", expand=True)
         self.btn_confirm.pack(side="bottom", fill="x")
 
-        self.geometry("{}x{}".format(600, 600))
+        self.geometry("{}x{}".format(600, 800))
         self.resizable(False, True)
 
     def add_new(self):
