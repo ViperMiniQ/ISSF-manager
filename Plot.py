@@ -450,6 +450,7 @@ class GraphManipulator(tk.Frame):
 
     @classmethod
     def get_results_on_dates(cls, shooter_id, date_from, date_to, programs, disciplines, targets, competitions):
+        """(results: [float], dates: [str 'yyyy-mm-dd'])"""
         values = DBGetter.get_results(
             date_from=date_from,
             date_to=date_to,

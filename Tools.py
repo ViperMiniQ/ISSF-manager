@@ -75,6 +75,11 @@ def SQL_date_format_to_croatian(date: str):
         return result
 
 
+def SQL_date_to_datetime_date(date: str):
+    """'%Y-%m-%d' -> datetime.date"""
+    return datetime.strptime(date, sql_date_format).date()
+
+
 def croatian_date_from_utc_milliseconds(utc_: int):
     return datetime.fromtimestamp(utc_ // 1000).strftime(croatian_date_format)
 
