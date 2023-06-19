@@ -1,3 +1,4 @@
+import logging
 import sqlite3
 
 import ApplicationProperties
@@ -759,7 +760,8 @@ class DBGetter:
             masa, -- 5
             maksimalni_pritisak, -- 6
             promjer, -- 7
-            vrijedi_do -- 8
+            vrijedi_do, -- 8
+            id_oruzje -- 9
         FROM cilindar_za_zrak
         """
         air_cylinders = []
@@ -780,7 +782,8 @@ class DBGetter:
                     "mass": d[5],
                     "max_pressure": d[6],
                     "diameter": d[7],
-                    "date_expire": d[8]
+                    "date_expire": d[8],
+                    "weapon_id": d[9]
                 }
             )
         return air_cylinders
@@ -819,7 +822,8 @@ class DBGetter:
             masa, -- 5
             maksimalni_pritisak, -- 6
             promjer, -- 7
-            vrijedi_do -- 8
+            vrijedi_do, -- 8
+            id_oruzje -- 9
         FROM cilindar_za_zrak
         """
         if serial_no:
@@ -841,7 +845,8 @@ class DBGetter:
             "mass": data[0][5],
             "max_pressure": data[0][6],
             "diameter": data[0][7],
-            "date_expire": data[0][8]
+            "date_expire": data[0][8],
+            "weapon_id": data[0][9]
         }
 
     @classmethod
@@ -3819,7 +3824,11 @@ class DBManipulator:
             rows = cursor.fetchall()
             for row in rows:
                 data.append(row)
-        except:
+        except Exception as e:
+            logging.log(logging.ERROR, e)
+            logging.log(logging.ERROR, query)
+            print(e)
+            print(query)
             data = [()]
         if not data:
             data = [()]

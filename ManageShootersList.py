@@ -120,6 +120,7 @@ class ShootersList(ComboboxBasicManager.ItemBasicManager):
 
     def _add_new(self):
         new_shooter = ToplevelNewShooter.AddShooter(self)
+        new_shooter.focus()
         new_shooter.wait_window()
         self._update_values()
         Changes.set_shooters()

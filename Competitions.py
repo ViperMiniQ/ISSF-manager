@@ -235,6 +235,7 @@ class Competitions(tk.Frame):
 
     def toplevel_hss_natjecanja(self):
         window = PreviewToplevel(self)
+        window.focus()
         window.wait_window()
 
     def update_competitions(self):
@@ -319,6 +320,7 @@ class Competitions(tk.Frame):
 
     def add_new_competition(self):
         info = CompetitionsInput.CompetitionsInput(self, save=True)
+        info.focus()
         info.wait_window()
         if info.values["id"]:
             self.display_competition(info.values)

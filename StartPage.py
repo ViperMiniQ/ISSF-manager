@@ -118,6 +118,7 @@ class Start(tk.Frame):
 
     def new_reminder(self):
         ask = Notification.AddNotification(self)
+        ask.focus()
         ask.wait_window()
         if ask.saved:
             self.load_notifications()
@@ -275,6 +276,7 @@ class Start(tk.Frame):
                 frame_color=notification["color"],
                 txt_color=notification["txt_color"]
             )
+        notifications_window.focus()
         notifications_window.wait_window()
 
     def clear_reminders(self):

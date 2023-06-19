@@ -367,6 +367,7 @@ class TwoListboxes(tk.Frame):
         name = selected_lbx.get(curselection)
         description = self.items_descriptions[name]
         new_item = RenameItem(self, name, description)
+        new_item.focus()
         new_item.wait_window()
         if new_item.dictionary:
             self.item_to_rename_from = name
@@ -410,6 +411,7 @@ class TwoListboxes(tk.Frame):
 
     def add_new(self):
         new_item = NewItem(self)
+        new_item.focus()
         new_item.wait_window()
         if new_item.dictionary:
             if not self.new_item_side:

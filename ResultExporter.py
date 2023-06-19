@@ -175,6 +175,7 @@ class ResultExporter(tk.Toplevel):
 
     def get_results(self):
         treefilter = ResultsFilter.FilterTreeview(self, False, window_title="Filter za izvoz")
+        treefilter.focus()
         treefilter.wait_window()
         if treefilter.user_closed:
             self.destroy()
@@ -273,6 +274,7 @@ class ResultExporter(tk.Toplevel):
 
     def create_new_config(self):
         ask = FileTitle(self, "Ime konfiguracije")
+        ask.focus()
         ask.wait_window()
         if ask.value is not None:
             if self.configuration_exists(ask.value):

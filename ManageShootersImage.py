@@ -32,6 +32,7 @@ class ShooterImage(tk.Frame):
     def ClassImageCrop(self, event=None):
         image_crop = ImageCrop.ImageCropToplevel(self)
         image_crop.geometry('{}x{}'.format(800, 450))
+        image_crop.focus()
         image_crop.wait_window()
         if image_crop.frame_main.cropped_image is not None:
             self.image = image_crop.frame_main.cropped_image

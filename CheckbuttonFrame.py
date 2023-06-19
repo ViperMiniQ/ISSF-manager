@@ -4,6 +4,7 @@ from tkinter import ttk
 import ScrollableFrame
 from typing import Dict
 import tkinter.font as tkFont
+from tkinter import messagebox
 
 
 class CheckboxFrame(tk.Frame):
@@ -154,17 +155,23 @@ class MultiCheckboxFrame(tk.Frame):
         self.frame_operations.rowconfigure(0, weight=1)
         self.cbx_dict = copy.deepcopy(cbx_dict)
         i = 0
-        for i, key in enumerate(self.cbx_dict[next(iter(self.cbx_dict))]):
-            lbl = ttk.Label(
-                self.frame_titles,
-                text=key,
-                font=("Arial", font_size),
-                justify="center",
-                anchor="center",
-            )
-            lbl.grid(row=0, column=i+1, sticky="ew")
-            self.frame_titles.columnconfigure(i+1, weight=self.font.measure(key), uniform="titles_cols")
-            self.frame_operations.columnconfigure(i+1, weight=self.font.measure(key), uniform="chks_cols")
+
+        try:
+            for i, key in enumerate(self.cbx_dict[next(iter(self.cbx_dict))]):
+                lbl = ttk.Label(
+                    self.frame_titles,
+                    text=key,
+                    font=("Arial", font_size),
+                    justify="center",
+                    anchor="center",
+                )
+                lbl.grid(row=0, column=i+1, sticky="ew")
+                self.frame_titles.columnconfigure(i+1, weight=self.font.measure(key), uniform="titles_cols")
+                self.frame_operations.columnconfigure(i+1, weight=self.font.measure(key), uniform="chks_cols")
+        except StopIteration:
+            messagebox.showerror(title="Greška", message="Greška #33.")
+            self.destroy()
+
         self.cols = i
         self.frame_titles.pack(side="top")
 

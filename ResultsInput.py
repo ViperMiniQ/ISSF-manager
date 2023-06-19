@@ -884,6 +884,7 @@ class ResultsInput(tk.Frame):
 
     def AddNote(self):
         note = Note(self, text=self.note_text2.get())
+        note.focus()
         note.wait_window()
         if note.text is not None:
             self.note_text2.set(note.text)

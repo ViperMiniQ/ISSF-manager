@@ -293,6 +293,7 @@ class AirCylinder(TypedDict):
     max_pressure: int
     diameter: int
     date_expire: str
+    weapon_id: int
 
 
 class Notification(TypedDict):

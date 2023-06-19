@@ -276,6 +276,7 @@ class GUI(tk.Tk):
             exporter = ResultExporter.ResultExporter(self)
             exporter.focus()
             exporter.update()
+            exporter.focus()
             exporter.wait_window()
 
     def UpdateFromdb(self, modified_table = None):

@@ -127,7 +127,7 @@ class WeaponsCommands(tk.Frame):
             command=lambda: self.add_reminder()
         )
 
-        self.btn_add_reminder.grid(row=1, column=0, sticky="nsew")
+        #self.btn_add_reminder.grid(row=1, column=0, sticky="nsew")
 
     def add_reminder(self):
         weapon_details = DBGetter.get_weapon_details(weapon_id=ManageArms.current_weapon_id)
@@ -137,6 +137,7 @@ class WeaponsCommands(tk.Frame):
             lock_title=True
         )
         notification.grab_set()
+        notification.focus()
         notification.wait_window()
 
 
@@ -1567,7 +1568,8 @@ class AirCylinderDetails(tk.Frame):
             "mass": self.ent_mass.get(),
             "max_pressure": self.ent_max_pressure.get(),
             "diameter": self.ent_diameter.get(),
-            "date_expire": str(self.date_expire.get_date())
+            "date_expire": str(self.date_expire.get_date()),
+            "weapon_id": ''
         }
 
     def save(self):
@@ -1589,7 +1591,8 @@ class AirCylinderDetails(tk.Frame):
                 "mass": self.ent_mass.get(),
                 "max_pressure": self.ent_max_pressure.get(),
                 "diameter": self.ent_diameter.get(),
-                "date_expire": str(self.date_expire.get_date())
+                "date_expire": str(self.date_expire.get_date()),
+                "weapon_id": ''
             },
             cylinder_id=self.cylinder_id
         ):
@@ -1912,6 +1915,7 @@ class WeaponServiceInformation(tk.Frame):
             self,
             weapon_id=ManageArms.current_weapon_id
         )
+        w.focus()
         w.grab_set()
         w.wait_window()
         self.refresh()
@@ -2018,6 +2022,7 @@ class WeaponServiceDetailsReadonly(tk.Frame):
             date=Tools.croatian_date_format_to_SQL(self.lbl_date.cget("text"))
         )
         w.grab_set()
+        w.focus()
         w.wait_window()
         self.refresh()
 
@@ -2108,12 +2113,13 @@ class AirCylindersToplevel(tk.Toplevel):
         self.mouse_click = False
 
         self.geometry("{}x{}".format(800, 600))
-        #self.resizable(False, False)
 
         self.frame_main = AirCylinders(self)
 
         self.frame_main.pack(expand=True, fill="both")
         self.after(10, self.frame_main.load_air_cylinders)
+
+        self.bind("<Configure>", self.frame_main.tree_air_cylinders.adjust_all_columns_by_text_length)
 
 
 class AirCylinders(tk.Frame):
@@ -2133,7 +2139,8 @@ class AirCylinders(tk.Frame):
             "Maksimalni pritisak (bar)": 1,
             "Promjer (mm)": 1,
             "id": 0,
-            "Vrijedi do": 1
+            "Vrijedi do": 1,
+            "Oružje": 1
         }
 
         self.treeview_column_widths = {
@@ -2145,7 +2152,8 @@ class AirCylinders(tk.Frame):
             "Maksimalni pritisak (bar)": 100,
             "Promjer (mm)": 100,
             "id": 1,
-            "Vrijedi do": 100
+            "Vrijedi do": 100,
+            "Oružje": 100
         }
 
         self.treeview_column_types = {
@@ -2157,7 +2165,8 @@ class AirCylinders(tk.Frame):
             "Maksimalni pritisak (bar)": "int",
             "Promjer (mm)": "int",
             "id": "int",
-            "Vrijedi do": "date"
+            "Vrijedi do": "date",
+            "Oružje": "str"
         }
 
         self.tree_air_cylinders = ResultsTree(
@@ -2224,6 +2233,7 @@ class AirCylinders(tk.Frame):
         ac = AddNewAirCylinderToplevel(self, details['id'])
         ac.title("Uredi zračni cilindar")
         ac.grab_set()
+        ac.focus()
         ac.wait_window()
         self.load_air_cylinders()
         Changes.call_refresh_air_cylinders()
@@ -2246,6 +2256,7 @@ class AirCylinders(tk.Frame):
     def add_air_cylinder(self):
         a = AddNewAirCylinderToplevel(self, 0)
         a.grab_set()
+        a.focus()
         a.wait_window()
         self.load_air_cylinders()
         Changes.call_refresh_air_cylinders()
@@ -2253,6 +2264,13 @@ class AirCylinders(tk.Frame):
     def load_air_cylinders(self):
         self.tree_air_cylinders.ClearTree()
         for air_cylinder in DBGetter.get_air_cylinders():
+            weapon = ''
+            if air_cylinder['weapon_id']:
+                try:
+                    w_details = DBGetter.get_weapon_details(weapon_id=air_cylinder['weapon_id'])
+                    weapon = f"{w_details['manufacturer']} {w_details['model']} ({w_details['serial_no']})"
+                except (TypeError, KeyError):
+                    pass
             self.tree_air_cylinders.AddResultToTree(
                 {
                     "Serijski broj": air_cylinder['serial_no'],
@@ -2263,7 +2281,10 @@ class AirCylinders(tk.Frame):
                     "Maksimalni pritisak (bar)": air_cylinder['max_pressure'],
                     "Promjer (mm)": air_cylinder['diameter'],
                     "id": air_cylinder['id'],
-                    "Vrijedi do": Tools.SQL_date_format_to_croatian(air_cylinder['date_expire'])
+                    "Vrijedi do": Tools.SQL_date_format_to_croatian(air_cylinder['date_expire']),
+                    "Oružje": weapon
                 }
             )
+        #self.tree_air_cylinders.adjust_all_columns_default()
         self.tree_air_cylinders.keep_aspect_ratio()
+        self.tree_air_cylinders.adjust_all_columns_by_text_length()

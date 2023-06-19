@@ -179,6 +179,7 @@ class Results(tk.Frame):
     def FilterTree(self, results=None):
         if not results:
             treefilter = FilterTreeview(self, False)
+            treefilter.focus()
             treefilter.wait_window()
             if treefilter.user_closed:
                 return

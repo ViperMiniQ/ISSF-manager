@@ -469,6 +469,7 @@ class GraphManipulator(tk.Frame):
 
     def add_configuration(self):
         r_filter = ResultsFilter.FilterTreeview(self, True)
+        r_filter.focus()
         r_filter.wait_window()
 
         try:

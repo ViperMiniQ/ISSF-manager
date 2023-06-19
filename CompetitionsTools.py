@@ -14,6 +14,7 @@ pozivno_pismo_path = "/Data/Pozivno pismo/"
 
 def set_hss_id(parent, competition_id: int):
     window = FileTitle(parent, "hss_id")
+    window.focus()
     window.wait_window()
     if window.value:
         if DBUpdate.set_competition_hss_id(competition_id, int(window.value)):

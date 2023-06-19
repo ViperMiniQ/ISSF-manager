@@ -110,20 +110,24 @@ class ShooterCommands(tk.Frame):
     def add_reminder(self):
         notification = Notification.AddNotification(self, title=self.lbl_shooter_title.cget("text"))
         notification.grab_set()
+        notification.focus()
         notification.wait_window()
 
     def show_notification_config(self):
         window = ConfigureShooterNotifications(self, ManageShootersMain.ManageShooters.current_shooter_id)
+        window.focus()
         window.wait_window()
         Changes.set_reminders()
 
     def show_seasons(self):
         window = ShooterSeasonsToplevel(self, shooter_id=self.controller.current_shooter_id)
+        window.focus()
         window.wait_window()
         self.refresh_btn_colors()
 
     def show_doctors_pdf(self):
         window = PDFDoctors(self, shooter_id=self.controller.current_shooter_id)
+        window.focus()
         window.wait_window()
         self.refresh_btn_colors()
 
@@ -296,6 +300,7 @@ class DoctorsPDF(tk.Frame):
 
     def add_pdf(self):
         window = AddDoctorsPDF(self)
+        window.focus()
         window.wait_window()
         if window.values['pdf_path']:
             pdf_id = DBAdder.add_doctors_pdf(
@@ -332,6 +337,7 @@ class DoctorsPDF(tk.Frame):
             date_from=Tools.croatian_date_format_to_SQL(values['Vrijedi od']),
             date_to=Tools.croatian_date_format_to_SQL(values['Vrijedi do'])
         )
+        window.focus()
         window.wait_window()
         if window.values:
             try:
@@ -816,6 +822,7 @@ class ShooterSeasons(tk.Frame):
 
     def add_season(self):
         window = ManageShooterSeasons(self)
+        window.focus()
         window.wait_window()
         if window.values:
             pdf_id = DBAdder.add_shooter_registration(
@@ -851,6 +858,7 @@ class ShooterSeasons(tk.Frame):
             date_to=Tools.croatian_date_format_to_SQL(values['Vrijedi do']),
             pdf_path=values['Path'],
         )
+        window.focus()
         window.wait_window()
         if window.values:
             try:

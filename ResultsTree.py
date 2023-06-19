@@ -6,14 +6,14 @@ import CheckbuttonFrame
 from collections import Counter
 
 # https://www.geeksforgeeks.org/hierarchical-treeview-in-python-gui-application/
-
+from typing import List
 import Tools
 import Colors
 
 
 class ResultsTree(tk.Frame):
-    def __init__(self, parent, controller, columns_dict, column_widths_dict, column_types_dict, style: str, font):
-        """Dictionary values must be under the same key"""
+    def __init__(self, parent, controller, columns_dict, column_widths_dict, column_types_dict, style: str, font, column_tags: List = None):
+        """Dictionary values must be under the same key, column_tags: List"""
         tk.Frame.__init__(self, parent)
         self.str_style = style
         self.controller = controller
@@ -21,6 +21,7 @@ class ResultsTree(tk.Frame):
         self.treeview_columns_dict = columns_dict
         self.treeview_column_widths = column_widths_dict
         self.treeview_column_types = column_types_dict
+        self.column_tags = column_tags
         self.style = ttk.Style()
         self.treeview_style = ttk.Style()
         self.treeview_style.configure(self.str_style + ".Treeview")
@@ -58,7 +59,7 @@ class ResultsTree(tk.Frame):
         for key, value in self.treeview_column_types.items():
             self.tree_shooter.heading(key, text=key, anchor="center", command=lambda col=key, col_type=value: self.treeview_sort_column(self.tree_shooter, col, col_type, False))
         for column in self.tree_shooter["columns"]:
-            self.tree_shooter.column(column, anchor="center", stretch=True)
+            self.tree_shooter.column(column, anchor="center", stretch=False)
 
         self.scr_tree_shooter_horizontal.pack(side="bottom", fill="x")
         self.tree_shooter.pack(side="left", expand=True, fill="both")
@@ -98,10 +99,10 @@ class ResultsTree(tk.Frame):
 
     def adjust_all_columns_default(self):
         for column in self.tree_shooter["displaycolumns"]:
-            self.adjust_column_size(column, int(self.treeview_column_widths[column]))
+            self.adjust_column_size(column, int(self.treeview_column_widths[column]), stretch=True)
         self.tree_shooter.update()
     
-    def adjust_all_columns_by_text_length(self):
+    def adjust_all_columns_by_text_length(self, event=None):
         total_columns_size = 0
         adjust_size = 0
         tree_column_sizes = {}
@@ -116,7 +117,7 @@ class ResultsTree(tk.Frame):
 
         if total_columns_size < self.tree_shooter.winfo_width():
             adjust_size = self.tree_shooter.winfo_width() - total_columns_size
-            adjust_size /= len(self.tree_shooter["displaycolumns"])
+            adjust_size = adjust_size // len(self.tree_shooter["displaycolumns"])
         if adjust_size < 10:
             adjust_size = 10
         for column in self.tree_shooter["displaycolumns"]:
@@ -198,8 +199,8 @@ class ResultsTree(tk.Frame):
     def ClearTree(self):
         self.tree_shooter.delete(*self.tree_shooter.get_children())
 
-    def adjust_column_size(self, column, size: int):
-        self.tree_shooter.column(column, minwidth=size, width=size, stretch=False)
+    def adjust_column_size(self, column, size: int, stretch: bool = False):
+        self.tree_shooter.column(column, minwidth=size, width=size, stretch=stretch)
 
     def GetNumberOfTreeviewColumns(self):
         return len(self.treeview_columns_dict)
@@ -294,29 +295,10 @@ class ResultsTree(tk.Frame):
     def set_treeview_items_height(self, height: int):
         self.style.configure(self.str_style + ".Treeview", rowheight=height)
 
-    
-    def IncreaseTreeItemFontSize(self):
-        if self.tree_item_font["size"] < 72:
-            font_size = self.tree_item_font["size"] + 1
-            self.set_treeview_items_font(font_size)  #self.tree_item_font["size"] = font_size
-            self.set_treeview_heading_height(font_size)
-            self.set_treeview_heading_font(font_size) #self.style.configure("Treeview.Heading", font=(None, font_size), rowheight=font_size)
-            self.set_treeview_items_height(int(font_size * 1.75)) #self.treeview_style.configure("T.Treeview", rowheight=int(font_size * 1.7))
 
-    
-    def DecreaseTreeItemFontSize(self):
-        if self.tree_item_font["size"] > 4:
-            font_size = self.tree_item_font["size"] - 1
-            self.set_treeview_items_font(font_size)  # self.tree_item_font["size"] = font_size
-            self.set_treeview_heading_height(font_size)
-            self.set_treeview_heading_font(font_size)  # self.style.configure("Treeview.Heading", font=(None, font_size), rowheight=font_size)
-            self.set_treeview_items_height(int(font_size * 1.75))
-
-    
     def BindI(self, event=None):
         self.controller.BindI()
 
-    
     def SetColumnWidth(self, dict, values):
         self.update_idletasks()
         x = self.winfo_width() - 17
@@ -330,20 +312,19 @@ class ResultsTree(tk.Frame):
         multiplier = x / values_sum
         for i, key in enumerate(dict):
             if dict[key]:
-                self.tree_shooter.column(key, stretch=True, width=int(values[key]*multiplier), anchor="center")
+                self.tree_shooter.column(key, stretch=False, width=int(values[key]*multiplier), anchor="center")
         self.scr_tree_shooter_horizontal.pack(side="bottom", fill="x")
         self.scr_tree_shooter_vertical.pack(side="right", fill="y")
 
-    
     def SelectColumnsToDisplay(self):
         columns_dict = SelectColumnsToDisplay(self, self.treeview_columns_dict)
+        columns_dict.focus()
         columns_dict.wait_window()
         if columns_dict.values:
             columns = self.GetColumnsToDisplay(columns_dict.values)
             self.treeview_columns_dict = columns_dict.values
             self.tree_shooter.configure(displaycolumns=columns)
 
-    
     def treeview_sort_column(self, tv, col, col_type, reverse):
         self.hastag = False
         l = [(tv.set(k, col), k) for k in tv.get_children('')]
@@ -390,7 +371,7 @@ class ResultsTree(tk.Frame):
         """Returns list of tuples (value, item)"""
         return [(self.tree_shooter.set(k, column), k) for k in self.tree_shooter.get_children('')]
 
-    def keep_aspect_ratio(self):
+    def keep_aspect_ratio(self, event=None):
         # TODO: what if font size == 0? the program crashes, no exception is raised
         #self.style.configure(self.str_style + ".Treeview", rowheight=self.tree_item_font["size"])
         self.style.configure(self.str_style + ".Treeview.Heading", font=(None, self.tree_item_font["size"]))
@@ -400,14 +381,13 @@ class ResultsTree(tk.Frame):
 
 
 class SelectColumnsToDisplay(tk.Toplevel):
-    
     def __init__(self, master, dictionary):
         tk.Toplevel.__init__(self, master)
         self.master = master
         self.grab_set()
         self.values = {}
         self.resizable(width=False, height=True)
-        self.frame_main = CheckbuttonFrame.CheckboxFrame(self, 0, 0, dictionary, 18, "light gray", "Stupci")
+        self.frame_main = CheckbuttonFrame.CheckboxFrame(self, dictionary, 18, "light gray", "Stupci")
         self.font = tkFont.Font(size=15)
 
         x = 200

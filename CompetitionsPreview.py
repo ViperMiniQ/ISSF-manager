@@ -499,6 +499,7 @@ class CompetitionPreview(tk.Frame):
 
     def modify(self):
         info = CompetitionsInput.CompetitionsInput(self, values=self.values, save=True, modify=True)
+        info.focus()
         info.wait_window()
         if info.values is not None:
             self.values = info.values
@@ -644,6 +645,7 @@ class CompetitionPreview(tk.Frame):
                 select_shooters[shooter["Strijelac"]] = 1
 
         ask = ShowShooters.ShowShooters(self, window_title, select_shooters)
+        ask.focus()
 
         ask.wait_window()
         if ask.values is None:

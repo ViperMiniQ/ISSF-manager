@@ -30,6 +30,8 @@ class PreviewToplevel(tk.Toplevel):
         self.preview.pack(expand=True, fill="both")
         self.after(100, lambda: self.preview.preview_competitions())
 
+        self.bind("<Configure>", self.preview.frame_tree.adjust_all_columns_by_text_length)
+
 
 class Preview(tk.Frame):
     def __init__(self, parent):
@@ -271,5 +273,7 @@ class Preview(tk.Frame):
             c["Unešeno"] = self.selected_symbol if c['hss_id'] in competitions_hss_ids else ''
             c['Datum'] = Tools.croatian_date_from_utc_milliseconds(int(c['utc_start']))
             self.frame_tree.AddResultToTree(c)
-        self.frame_tree.adjust_all_columns_default()
         self.frame_tree.keep_aspect_ratio()
+        #self.frame_tree.adjust_all_columns_default()
+        self.frame_tree.adjust_all_columns_by_text_length()
+

@@ -48,6 +48,7 @@ class HTMLResults(tk.Frame):
 
     def _get_results(self):
         r_filter = FilterTreeview(self)
+        r_filter.focus()
         r_filter.wait_window()
 
         if r_filter.user_closed:
