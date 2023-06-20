@@ -99,3 +99,4 @@ class ManageShooters(tk.Frame):
         self.shooter_commands.update_values(
             title=shooter_basic_info['Ime'] + " " + shooter_basic_info['Prezime'] + " (" + shooter_basic_info['Datum'] + ")",
         )
+        self.shooter_image.UpdateValues(shooter_id)

@@ -29,7 +29,7 @@ class ShooterImage(tk.Frame):
 
         self.load_shooter_image("ding_dong")
 
-    def ClassImageCrop(self, event=None):
+    def open_imagecrop(self, event=None):
         image_crop = ImageCrop.ImageCropToplevel(self)
         image_crop.geometry('{}x{}'.format(800, 450))
         image_crop.focus()
@@ -37,52 +37,40 @@ class ShooterImage(tk.Frame):
         if image_crop.frame_main.cropped_image is not None:
             self.image = image_crop.frame_main.cropped_image
             self.image.save(self.image_path + str(self.shooter_id) + self.image_extension)
-            self.AdjustImages()
+            self.adjust_image()
 
     def load_shooter_image(self, path: str):
         try:
             self.image = Image.open(path)
-            self.AdjustImages()
+            self.adjust_image()
         except (FileNotFoundError, PermissionError):
-            self.LoadNoProfileImage()
-            self.RemoveImage()
+            self.load_no_profile_image()
 
-    def SetNoProfileImage(self, path):
+    def load_no_profile_image(self):
         try:
-            self.image = Image.open(path)
-            self.no_profile_image_path = path
+            self.image = Image.open(ApplicationProperties.SHOOTER_NO_PROFILE_IMAGE_PATH)
+            self.adjust_image()
         except (FileNotFoundError, PermissionError):
             self.image = None
-
-    def LoadNoProfileImage(self):
-        try:
-            self.image = Image.open(self.no_profile_image_path)
-        except (FileNotFoundError, PermissionError):
-            self.image = None
-
-    def SetImageFilepath(self, image_path: str):
-        self.image_path = image_path
+            self.remove_image()
 
     def UpdateValues(self, shooter_id: int):
         self.shooter_id = shooter_id
         self.load_shooter_image(ApplicationProperties.SHOOTER_IMAGES_DIR + str(shooter_id) + self.image_extension)
 
-    def SetImageTitle(self, title: str):
-        self.image_filename_to_save_as = title
-
-    def RemoveImage(self):
+    def remove_image(self):
         self.canv_shooter_image.delete("all")
 
     def ready_image_select(self):
-        self.canv_shooter_image.bind("<Button-1>", self.ClassImageCrop)
+        self.canv_shooter_image.bind("<Button-1>", self.open_imagecrop)
 
-    def WaitImageSelect(self):
+    def _wait_image_select(self):
         self.canv_shooter_image.unbind_all("<Button-1>")
 
-    def AdjustImages(self):
+    def adjust_image(self):
         self.update()
         x_cropped = self.canv_shooter_image.winfo_width()
         y_cropped = self.canv_shooter_image.winfo_height()
-        self.canvas_img = self.image.resize((x_cropped,y_cropped), Image.ANTIALIAS)
+        self.canvas_img = self.image.resize((x_cropped, y_cropped), Image.ANTIALIAS)
         self.canvas_img = ImageTk.PhotoImage(self.canvas_img)
-        self.canv_shooter_image.create_image(0,0, image=self.canvas_img, anchor="nw")
+        self.canv_shooter_image.create_image(0, 0, image=self.canvas_img, anchor="nw")

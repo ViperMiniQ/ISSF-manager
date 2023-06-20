@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 import tkinter.font as tkFont
 from dateutil.relativedelta import relativedelta
+
 import Colors
 import ScrollableFrame
 import Notification
@@ -40,7 +41,8 @@ class Start(tk.Frame):
         self.NPIN_expired = []
         self.others = []
         self.birthdays = []
-        self.air_cylinders = []
+        self.air_cylinders_about_to_expire = []
+        self.air_cylinders_expired = []
 
         self.upcoming_competitions = []
         self.elapsed_competitions = []
@@ -91,7 +93,7 @@ class Start(tk.Frame):
 
         self.grid_propagate(False)
         self.rowconfigure(0, weight=1, uniform="row")
-        self.rowconfigure(1, weight=6, uniform="row")
+        self.rowconfigure(1, weight=4, uniform="row")
         self.rowconfigure(2, weight=9, uniform="row")
 
         self.columnconfigure(0, weight=1, uniform="column")
@@ -111,6 +113,7 @@ class Start(tk.Frame):
         self.frame_reminders.grid(row=2, column=0, columnspan=3, sticky="nsew")
 
         self.calendar = NotificationCalendar(self)
+        print("---------------------xx--------------------")
         self.calendar.grid(row=0, rowspan=2, column=2, sticky="nsew")
         self.frame_control_buttons.grid(row=0, column=0, columnspan=2, sticky="nsew")
 
@@ -125,7 +128,22 @@ class Start(tk.Frame):
 
     def load_colors(self):
         self.reload_reminders()
-
+        
+    def load_air_cylinders_expired(self):
+        air_cylinders = DBGetter.get_air_cylinders()
+        for air_cylinder in air_cylinders:
+            if Tools.string_to_datetime_date(air_cylinder['date_expire']) < ApplicationProperties.CURRENT_DATE:
+                cylinder_expired: sqlTypes.Notification = {
+                    "id": 0,
+                    "title": f"{air_cylinder['manufacturer']} ({air_cylinder['serial_no']})",
+                    "text": self.txt_air_cylinder_expired,
+                    "date": air_cylinder['date_expire'],
+                    "bg": Colors.colors["Notifications"]["Zračni cilindar istekao"]["bg"],
+                    "fg": Colors.colors["Notifications"]["Zračni cilindar istekao"]["fg"],
+                    "type": "Zračni cilindar"
+                }
+                self.air_cylinders_expired.append(cylinder_expired)
+                
     def load_air_cylinders_to_expire(self):
         air_cylinders = DBGetter.get_air_cylinders()
         for air_cylinder in air_cylinders:
@@ -139,11 +157,11 @@ class Start(tk.Frame):
                 "title": f"{air_cylinder['manufacturer']} ({air_cylinder['serial_no']})",
                 "text": self.txt_air_cylinder_expires,
                 "date": air_cylinder['date_expire'],
-                "bg": "grey",
-                "fg": "black",
+                "bg": Colors.colors["Notifications"]["Zračni cilindar ističe"]["bg"],
+                "fg": Colors.colors["Notifications"]["Zračni cilindar ističe"]["fg"],
                 "type": "Zračni cilindar"
             }
-            self.air_cylinders.append(cylinder_expire)
+            self.air_cylinders_about_to_expire.append(cylinder_expire)
 
     def load_NPIN_about_to_expire(self):
         shooters_with_NPIN_about_to_expire = DBGetter.get_shooter_with_NPIN_about_to_expire(self.NPIN_day)
@@ -296,7 +314,8 @@ class Start(tk.Frame):
         self.upcoming_competitions.clear()
         self.elapsed_competitions.clear()
 
-        self.air_cylinders.clear()
+        self.air_cylinders_about_to_expire.clear()
+        self.air_cylinders_expired.clear()
 
     def refresh_reminders_dicts(self):
         self.load_doctor_expired()
@@ -314,7 +333,9 @@ class Start(tk.Frame):
         self.load_birthdays()
         self.frame_info.set_row_number("Rođendan", len(self.birthdays))
         self.load_air_cylinders_to_expire()
-        self.frame_info.set_row_number("Zračni cilindar", len(self.air_cylinders))
+        self.frame_info.set_row_number("Ističe", len(self.air_cylinders_about_to_expire))
+        self.load_air_cylinders_expired()
+        self.frame_info.set_row_number("Istekao", len(self.air_cylinders_expired))
 
     def update_reminders(self):
         self.load_notifications()
@@ -339,8 +360,10 @@ class Start(tk.Frame):
             all_reminders += self.others
         if states["Rođendan"]:
             all_reminders += self.birthdays
-        if states["Zračni cilindar"]:
-            all_reminders += self.air_cylinders
+        if states["Ističe"]:
+            all_reminders += self.air_cylinders_about_to_expire
+        if states["Istekao"]:
+            all_reminders += self.air_cylinders_expired
         self.reminders = sorted(
             all_reminders,
             key=lambda d: d['date']
@@ -349,6 +372,10 @@ class Start(tk.Frame):
         self.reload_reminders()
 
     def reload_reminders(self):
+        try:
+            self.frame_reminders.canvas.yview_moveto(0)
+        except Exception as e:
+            pass
         for reminder in self.reminders:
             if reminder['id']:
                 self._place_reminder(reminder, True)
@@ -418,12 +445,16 @@ class Start(tk.Frame):
 
     def SelectAllCalendar(self):
         self.calendar_notifications = []
-        self.calendar.UpdateDates(
+        self.calendar.set_notifications(
             self.NPIN_expired
             + self.doctor_expired
+            + self.doctor_expires
             + self.upcoming_competitions
             + self.elapsed_competitions
             + self.others
+            + self.air_cylinders_expired
+            + self.air_cylinders_about_to_expire
+            + self.birthdays
         )
 
     def update_all(self):
@@ -450,7 +481,7 @@ class StarPageList(tk.Frame):
         self.pack_propagate(False)
 
         self.treeview_style = ttk.Style()
-        self.treeview_style.configure("StartPage.Treeview", background="grey")
+        self.treeview_style.configure("StartPage.Treeview", background="grey80")
 
         self.tree = MenuTreeview(self, style="StartPage.Treeview", columns=["number", "active"], show="tree")
 
@@ -489,13 +520,15 @@ class StarPageList(tk.Frame):
         self.tree.insert("Vatreno", tk.END, "VatrenoPuška", text="Puška", tags="child_font", values=start_values)
         self.tree.insert("Vatreno", tk.END, "VatrenoPištolj", text="Pištolj", tags="child_font", values=start_values)
         self.tree.insert("Oružje", tk.END, "Samostrel", text="Samostrel", tags="child_font", values=start_values)
+        self.tree.insert("Zračni cilindar", tk.END, "Istekao", text="Istekao", tags="child_font", values=start_values)
+        self.tree.insert("Zračni cilindar", tk.END, "Ističe", text="Ističe", tags="child_font", values=start_values)
 
         self.tree.tag_configure("font", font=self.root_tree_item_font)
         self.tree.tag_configure("child_font", font=self.node_tree_item_font)
 
         self.menu = tk.Menu(self, tearoff=0)
-        self.menu.add_command(label="Prikaži", command=lambda: self.set_row_status("active"))
-        self.menu.add_command(label="Ne prikazuj", command=lambda: self.set_row_status("inactive"))
+        self.menu.add_command(label="Prikaži P", command=lambda: self.set_row_status("active"))
+        self.menu.add_command(label="Ne prikazuj N", command=lambda: self.set_row_status("inactive"))
         self.menu.add_separator()
         self.menu.add_command(label="Osvježi", command=lambda: self.controller.update_reminders())
 
@@ -521,7 +554,8 @@ class StarPageList(tk.Frame):
             "Natjecanja": True if self.tree.set(item="Natjecanja", column="active") == self.selected_symbol else False,
             "Drugo": True if self.tree.set(item="Drugo", column="active") == self.selected_symbol else False,
             "Rođendan": True if self.tree.set(item="Rođendan", column="active") == self.selected_symbol else False,
-            "Zračni cilindar": True if self.tree.set(item="Zračni cilindar", column="active") == self.selected_symbol else False
+            "Istekao": True if self.tree.set(item="Istekao", column="active") == self.selected_symbol else False,
+            "Ističe": True if self.tree.set(item="Ističe", column="active") == self.selected_symbol else False,
         }
 
     def notify(self):

@@ -23,15 +23,13 @@ class Calendar(tk.Frame):
    █ ▀▀▀▀▀▀▀  ▀▀▀▀▀▀▀                                              █
    ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     """
-    def _init__(self, parent):
-        tk.Frame.__init__(self, parent)
-
-        self.date = ApplicationProperties.CURRENT_DATE
+    def __init__(self, parent):
+        super().__init__(parent, bg="blue")
         self.btn_dates = {}
 
-        self.year = int(self.date.strftime("%Y"))
-        self.month = int(self.date.strftime("%m"))
-        self.day = int(self.date.strftime("%d"))
+        self.year = ApplicationProperties.CURRENT_DATE.year
+        self.month = ApplicationProperties.CURRENT_DATE.month
+        self.day = ApplicationProperties.CURRENT_DATE.day
 
         self.buttons = []
 
@@ -47,6 +45,8 @@ class Calendar(tk.Frame):
         self.frame_title.rowconfigure(0, weight=1)
         self.frame_title.rowconfigure(1, weight=5)
         self.frame_title.rowconfigure(2, weight=5)
+
+        self.grid_propagate(False)
 
         for x in range(0, 15, 2):
             self.frame_title.columnconfigure(x, weight=1, uniform='title_column')
@@ -120,7 +120,8 @@ class Calendar(tk.Frame):
         self.lbl_title.grid(row=0, column=5, columnspan=5, sticky="ew")
         self.btn_next_month.grid(row=0, column=11, sticky="ew")
         self.btn_next_year.grid(row=0, column=13, sticky="ew")
-        
+
+        print("------------------xxx-----------------")
         self.create_day_buttons()
         self.update_title()
 
@@ -131,7 +132,6 @@ class Calendar(tk.Frame):
 
     def create_day_buttons(self):
         self._clear_day_buttons()
-        self.buttons.clear()
 
         row = 1
         column = datetime(self.year, self.month, 1).weekday() * 2 + 1  # ((7 - last_day_in_first_week) * 2) + 1
@@ -206,13 +206,29 @@ class NotificationCalendar(Calendar):
     def __init__(self, parent):
         super().__init__(parent)
 
-    def AddReminder(self, day):
-        date = datetime(self.year, self.month, day)
-        #self.controller.AddReminderFromCalendar(date)
+        self.btn_dates = []
+        # self.btn_next_year.configure(
+        #     command=Tools.combine_funcs(self._next_year, self.color_day_buttons)
+        # )
+        # self.btn_next_month.configure(
+        #     command=Tools.combine_funcs(self._next_month, self.color_day_buttons)
+        # )
 
-    def ShowInWindow(self, day):
-        date = str(datetime(self.year, self.month, day).date())
-        #self.controller.WindowWhereDate(date)
+    def _next_year(self):
+        super()._next_year()
+        self.color_day_buttons()
+
+    def _next_month(self):
+        super()._next_month()
+        self.color_day_buttons()
+
+    def _previous_year(self):
+        super()._previous_year()
+        self.color_day_buttons()
+
+    def _previous_month(self):
+        super()._previous_month()
+        self.color_day_buttons()
 
     def color_day_buttons(self):
         for notification in self.btn_dates:
@@ -220,10 +236,10 @@ class NotificationCalendar(Calendar):
                 if (int(datetime.strptime(notification["date"], '%Y-%m-%d').strftime('%m')) == self.month and
                 int(datetime.strptime(notification["date"], '%Y-%m-%d').strftime('%Y')) == self.year):
                     day = int(datetime.strptime(notification["date"], '%Y-%m-%d').strftime('%d'))
-                    self.buttons[day-1].configure(bg=notification["color"])
-            except:
+                    self.buttons[day-1].configure(bg=notification["bg"])
+            except Exception as e:
                 pass
 
-    def UpdateDates(self, dates_dict):
-        self.btn_dates = dates_dict
+    def set_notifications(self, notifications):
+        self.btn_dates = notifications
         self.color_day_buttons()

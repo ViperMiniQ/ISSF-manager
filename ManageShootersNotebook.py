@@ -66,4 +66,4 @@ class ManageShootersInformation(tk.Frame):
         self.frame_info_basic.UpdateValues(DBGetter.get_shooter_general_info(shooter_id))
         self.frame_info_contact.UpdateValues(DBGetter.get_shooter_contact_info(shooter_id))
         self.frame_info_notes.UpdateValues()
-        self.frame_weapons.set_shooter_id_and_refresh(shooter_id)
+        #self.frame_weapons.set_shooter_id_and_refresh(shooter_id)

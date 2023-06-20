@@ -65,3 +65,5 @@ WEAPON_IMAGES_DIR = LOCATION + "/Data/Oruzje/"
 
 FONTS_PATH = LOCATION + "/Config/Fonts2.json"
 COLORS_PATH = LOCATION + "/Config/Colors.json"
+
+SHOOTER_NO_PROFILE_IMAGE_PATH = LOCATION + "/Data/no_profile.png"

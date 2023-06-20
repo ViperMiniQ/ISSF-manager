@@ -199,3 +199,10 @@ def remove_weapon_images(weapon_id: int):
 
 def string_to_datetime_date(date: str, date_format: str = sql_date_format):
     return datetime.strptime(date, date_format).date()
+
+
+def combine_funcs(*funcs):
+    def combined_func(*args, **kwargs):
+        for f in funcs:
+            f(*args, **kwargs)
+    return combined_func
