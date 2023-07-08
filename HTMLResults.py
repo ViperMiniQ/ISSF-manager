@@ -70,7 +70,6 @@ class HTMLResults(tk.Frame):
         self._clean_results()
 
     def _save_as_pdf(self):
-        #pdfkit.from_file(ApplicationProperties.LOCATION + "/test.html")
         df = pd.DataFrame(self.results)
         self.dataframe_to_pdf(df, ApplicationProperties.LOCATION + "/OUT1.pdf", 20)
 
@@ -104,12 +103,6 @@ class HTMLResults(tk.Frame):
 
     def _save_results_to_file(self, pdfpages: PdfPages, start_index: int, stop_index: int, rows_per_page: int = 25, pagesize=(8.3, 11.7)):
         for i in range(0, (stop_index - start_index) // rows_per_page + 1, 1):
-            # print(start_index, stop_index)
-            # print(self.results[start_index + (i * rows_per_page)
-            #                    :
-            #                    stop_index if stop_index < start_index + ((i+1) * rows_per_page) else start_index + ((i+1) * rows_per_page)
-            #                     ]
-            # )
             pdfpages.savefig(
                 self._draw_as_table(
                     pd.DataFrame(

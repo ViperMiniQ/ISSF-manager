@@ -9,6 +9,10 @@ class ImageCrop(tk.Frame):
         """supported extensions: 'png' """
         super().__init__(parent, *args, **kwargs)
 
+        self.save_location = ""
+        self.filename = ""
+        self.file_extension = ""
+
         self.supported_save_filetypes = (".png",)
         self.supported_load_filetypes = (".png", ".jpg")
 

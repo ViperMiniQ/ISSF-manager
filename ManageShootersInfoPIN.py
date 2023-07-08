@@ -3,6 +3,7 @@ from datetime import datetime
 import Fonts
 import sqlTypes
 from CustomWidgets import DateEntry2
+import Tools
 
 
 class ShooterPINInformation(tk.Frame):
@@ -10,7 +11,7 @@ class ShooterPINInformation(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.font = Fonts.fonts2["ManageShooters"]["ManageShootersInformation"]["buttons"]["font"]
         self.controller = parent
-        self.validate_numbers = (self.register(self.ValidateNumbers))
+        self.validate_numbers = (self.register(Tools.allow_only_integer))
 
         self.lbl_NPIN = tk.Label(
             self,
@@ -50,7 +51,7 @@ class ShooterPINInformation(tk.Frame):
             variable=self.NPIN_permament,
             font=self.font,
             text="Osobna je trajna",
-            command=lambda: self.CheckNPINPermanent()
+            command=lambda: self._check_NPIN_permanent()
         )
 
         self.lbl_NPIN_place = tk.Label(
@@ -104,7 +105,7 @@ class ShooterPINInformation(tk.Frame):
             variable=self.passport_exists,
             text="Nema putovnicu",
             font=self.font,
-            command=lambda: self.CheckPassport()
+            command=lambda: self._check_passport()
         )
 
         self.lbl_passport_place = tk.Label(
@@ -162,11 +163,7 @@ class ShooterPINInformation(tk.Frame):
         self.lbl_citizenship.place(rely=0.74, relx=0.05, anchor="nw")
         self.ent_citizenship.place(rely=0.78, relx=0.05, anchor="nw")
 
-    def ValidateNumbers(self, P):
-        if P.isdigit() or P == "":
-            return True
-
-    def UpdateValues(self, values: sqlTypes.ShooterPINInfo):
+    def update_values(self, values: sqlTypes.ShooterPINInfo):
         self.NPIN.set(values['OI'])
         self.calendar_NPIN_expire.set_date(datetime.strptime(values['OIDatum'], "%Y-%m-%d").strftime("%d. %m. %Y."))
         self.NPIN_permament.set(values['OITrajna'])
@@ -193,19 +190,19 @@ class ShooterPINInformation(tk.Frame):
         }
         return values
 
-    def CheckNPIN(self):
+    def _check_NPIN(self):
         if self.calendar_NPIN_expire.get_date() > self.controller.current_date:
             self.lbl_NPIN_expire.configure(bg="green")
         else:
             self.lbl_NPIN_expire.configure(bg="red")
 
-    def CheckNPINPermanent(self):
+    def _check_NPIN_permanent(self):
         if self.NPIN_permament.get():
             self.calendar_NPIN_expire.configure(state="disabled")
         else:
             self.calendar_NPIN_expire.configure(state="normal")
 
-    def CheckPassport(self):
+    def _check_passport(self):
         if self.passport_exists.get():
             self.calendar_passport_expire.configure(state="disabled")
             self.ent_passport.configure(state="disabled")

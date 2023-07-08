@@ -99,7 +99,7 @@ class ShooterInfoContact(tk.Frame):
         self.lbl_email.place(relx=0.1, rely=0.66, anchor="nw")
         self.ent_email.place(relx=0.1, rely=0.7, anchor="nw")
 
-    def UpdateValues(self, values: sqlTypes.ShooterContactInfo):
+    def update_values(self, values: sqlTypes.ShooterContactInfo):
         self.phone_house.set(values["TelefonKuca"])
         self.phone_work.set(values["TelefonPosao"])
         self.mobile1.set(values["Mobitel1"])

@@ -10,7 +10,7 @@ class ShooterRequiredInformation(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.font = Fonts.fonts2["ManageShooters"]["ManageShootersInformation"]["buttons"]["font"]
 
-        self.validate_numbers = (self.register(self.ValidateNumbers))
+        self.validate_numbers = (self.register(Tools.allow_only_integer))
 
         # <GRID> #
 
@@ -104,7 +104,6 @@ class ShooterRequiredInformation(tk.Frame):
             state="readonly"
         )
 
-
         self.lbl_place_of_birth = tk.Label(
             self,
             text="Mjesto rođenja:",
@@ -193,7 +192,7 @@ class ShooterRequiredInformation(tk.Frame):
         self.lbl_HSS.place(relx=0.05, rely=0.73, anchor="nw")
         self.ent_HSS.place(relx=0.05, rely=0.77, anchor="nw")
 
-    def UpdateValues(self, shooter_required_info: sqlTypes.ShooterRequiredInfo):
+    def update_values(self, shooter_required_info: sqlTypes.ShooterRequiredInfo):
         self.name.set(shooter_required_info['Ime'])
         self.lastname.set(shooter_required_info['Prezime'])
         self.sex.set(shooter_required_info['Spol'])
@@ -218,7 +217,3 @@ class ShooterRequiredInformation(tk.Frame):
             "HSS": self.HSS.get()
         }
         return required_info
-
-    def ValidateNumbers(self, P):
-        if P.isdigit() or P == "":
-            return True

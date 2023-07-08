@@ -99,7 +99,7 @@ class ManageArms(tk.Frame):
             self.weapon_shooter.refresh()
             self.weapon_air_cylinders.refresh()
             self.weapons_image.refresh()
-        except:
+        except Exception:
             pass
         finally:
             self.configure(cursor="")
@@ -1213,7 +1213,6 @@ class WeaponAirCylinders(tk.Frame):
 
         self.initial_state = DBGetter.get_weapon_air_cylinders(ManageArms.current_weapon_id)
 
-        print("inišal stejt", self.initial_state)
         for air_cylinder_id in self.initial_state:
             self.frames_air_cylinders.append(
                 WeaponAirCylinder(
@@ -2271,7 +2270,7 @@ class AirCylinders(tk.Frame):
                     weapon = f"{w_details['manufacturer']} {w_details['model']} ({w_details['serial_no']})"
                 except (TypeError, KeyError):
                     pass
-            self.tree_air_cylinders.AddResultToTree(
+            self.tree_air_cylinders.add_values_to_row(
                 {
                     "Serijski broj": air_cylinder['serial_no'],
                     "Proizvođač": air_cylinder['manufacturer'],
@@ -2285,6 +2284,5 @@ class AirCylinders(tk.Frame):
                     "Oružje": weapon
                 }
             )
-        #self.tree_air_cylinders.adjust_all_columns_default()
         self.tree_air_cylinders.keep_aspect_ratio()
         self.tree_air_cylinders.adjust_all_columns_by_text_length()

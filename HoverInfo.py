@@ -193,20 +193,3 @@ class BaseTooltip(object):
         if self.tipwindow:
             self.tipwindow.destroy()
             self.tipwindow = None
-
-"""
-def activate_all_tooltips():
-    for tooltip in tooltips:
-        tooltip.schedule()
-
-
-def deactivate_all_tooltips():
-    for tooltip in tooltips:
-        tooltip.unschedule()
-
-
-def create_tooltip(widget, text: str, font_size: int = 100):
-    hovertip = Hovertip(widget, text, font_size)
-    #hovertip.schedule()
-    tooltips.append(hovertip)
-"""

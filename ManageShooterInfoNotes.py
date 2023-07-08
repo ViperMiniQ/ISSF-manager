@@ -42,24 +42,16 @@ class ShooterNotes(tk.Frame):
             text="\n" + text,
             color=color
         )
-        new_note.SetFont(self.note_font_size)
+        new_note.set_font(self.note_font_size)
         self.notes[note_id] = new_note
         self.notes[note_id].pack(side="top", expand=True, fill="x")
 
-    def DeleteNote(self, note_id: int):
+    def delete_note(self, note_id: int):
         DBRemover.delete_note(note_id)
         self.notes[note_id].destroy()
         self.notes.pop(note_id)
 
-    def SetNotesFont(self, size: int):
-        self.note_font_size = size
-        for note_id, note in self.notes.items():
-            note.SetFont(self.note_font_size)
-
-    def SetDateLabelFont(self, size: int):
-        self.date_font.configure(size=size)
-
-    def UpdateValues(self):
+    def update_values(self):
         self.clear_notes()
         notes = DBGetter.get_shooter_notes(self.manage_shooters.current_shooter_id)
         if notes:

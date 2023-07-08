@@ -18,6 +18,7 @@ import Fonts
 from dbcommands_rewrite import DBGetter, DBAdder, DBRemover, DBUpdate
 
 
+# TODO: make entire class PEP8 compliant
 class Results(tk.Frame):
     @benchmark
     def __init__(self, parent, controller):
@@ -137,7 +138,7 @@ class Results(tk.Frame):
 
         self.update_all()
 
-        self.ReloadAllResultsAddToTree()
+        self.reload_results()
 
         self.tooltip = HoverInfo.BaseTooltip(self, 14)
 
@@ -199,9 +200,8 @@ class Results(tk.Frame):
                 result["Napomena"] = "*"
             else:
                 result["Napomena"] = ""
-            self.frame_tree.AddResultToTree(result, top=False)
+            self.frame_tree.add_values_to_row(result, top=False)
 
-    
     def ClearTree(self):
         self.frame_tree.ClearTree()
 
@@ -249,9 +249,9 @@ class Results(tk.Frame):
         self.FilterTree()
 
     def RefreshPressed(self):
-        self.ReloadAllResultsAddToTree()
+        self.reload_results()
 
-    def ReloadAllResultsAddToTree(self):
+    def reload_results(self):
         self.frame_tree.ClearTree()
         results = DBGetter.get_results()
         for result in results:
@@ -260,24 +260,24 @@ class Results(tk.Frame):
                 result["Napomena"] = "*"
             else:
                 result["Napomena"] = ""
-            self.frame_tree.AddResultToTree(result, top=False)
+            self.frame_tree.add_values_to_row(result, top=False)
 
-    def GetCompetitionIdFromName(self, competition: str):
+    def get_competition_id_from_name(self, competition: str):
         for c in self.competitions:
             if f"({Tools.SQL_date_format_to_croatian(c['Datum'])}) {c['Naziv']}" == competition:
                 return c["id"]
 
-    def GetShooterIdFromName(self, shooter: str):
+    def get_shooter_id_from_name(self, shooter: str):
         for s in self.shooters:
             if s["Ime"] + " " + s["Prezime"] == shooter:
                 return s["id"]
 
-    def GetDisciplineIdFromName(self, discipline: str):
+    def get_discipline_id_from_name(self, discipline: str):
         for d in self.disciplines:
             if d["Naziv"] == discipline:
                 return d["id"]
 
-    def GetTargetIdFromName(self, target: str):
+    def get_target_id_from_name(self, target: str):
         for t in self.targets:
             if t["Naziv"] == target:
                 return t["id"]
@@ -310,19 +310,19 @@ class Results(tk.Frame):
             messagebox.showerror("Greška", "Nije odabrano valjano natjecanje!")
             return
 
-        input_values["idNatjecanja"] = self.GetCompetitionIdFromName(input_values["Natjecanje"])
-        input_values["idStrijelac"] = self.GetShooterIdFromName(input_values["Strijelac"])
+        input_values["idNatjecanja"] = self.get_competition_id_from_name(input_values["Natjecanje"])
+        input_values["idStrijelac"] = self.get_shooter_id_from_name(input_values["Strijelac"])
         p = input_values["Program"]
         d = input_values["Disciplina"]
         m = input_values["Meta"]
         input_values["Program"] = self.GetProgramIdFromName(input_values["Program"])
-        input_values["Disciplina"] = self.GetDisciplineIdFromName(input_values["Disciplina"])
-        input_values["Meta"] = self.GetTargetIdFromName(input_values["Meta"])
+        input_values["Disciplina"] = self.get_discipline_id_from_name(input_values["Disciplina"])
+        input_values["Meta"] = self.get_target_id_from_name(input_values["Meta"])
 
         if self.updating_result:
             self.frame_input.SetBtnAddTitle("Dodaj")
 
-            self.UpdateShooterdb(input_values, self.updating_result_id)
+            self.update_result(input_values, self.updating_result_id)
 
             if input_values != "":
                 input_values["Napomena"] = "*"
@@ -334,13 +334,13 @@ class Results(tk.Frame):
             input_values["Program"] = p
             input_values["Disciplina"] = d
             input_values["Meta"] = m
-            self.frame_tree.EditTreeviewRowValues(self.tree_edit_item, input_values)
+            self.frame_tree.edit_row_values(self.tree_edit_item, input_values)
 
             self.tree_edit_item = None
             self.updating_result_id = 0
             self.updating_result = False
         else:
-            self.UpdatedbDnevnik(input_values)
+            self.save_result(input_values)
 
             last_rowid = DBGetter.get_last_result_id()
             input_values["id"] = last_rowid
@@ -353,13 +353,11 @@ class Results(tk.Frame):
             input_values["Program"] = p
             input_values["Disciplina"] = d
             input_values["Meta"] = m
-            print(input_values)
-            self.frame_tree.AddResultToTree(input_values, top=True)
+            self.frame_tree.add_values_to_row(input_values, top=True)
 
         self.frame_input.clear_entries()
-
     
-    def BindI(self):
+    def bind_i(self):
         values = self.frame_tree.get_values_of_selected_row()
         note_text = DBGetter.get_result_note_text(values["id"])
         if not (note_text is None or note_text == ""):
@@ -412,8 +410,8 @@ class Results(tk.Frame):
         self.frame_tree.SelectColumnsToDisplay()
         self.frame_tree.adjust_all_columns_by_text_length()
 
-    def UpdateShooterdb(self, result: sqlTypes.ResultInput, result_id: int):
+    def update_result(self, result: sqlTypes.ResultInput, result_id: int):
         DBUpdate.update_result(result, result_id)
 
-    def UpdatedbDnevnik(self, values: sqlTypes.ResultInput):
+    def save_result(self, values: sqlTypes.ResultInput):
         DBAdder.add_result(values)

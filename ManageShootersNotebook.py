@@ -51,19 +51,15 @@ class ManageShootersInformation(tk.Frame):
         self.notebook_add_shooter.pack(side="top", expand=True, fill="both")
         self.btn_save_changes.pack(side="bottom", fill="x")
 
-    def save_shooter_details(self):
-        self.controller.SaveShooterDetails()
-
-    def SaveShooterDetails(self, shooter_id: int):
+    def save_shooter_details(self, shooter_id: int):
         DBUpdate.update_shooter_required_info(shooter_id=shooter_id, values=self.frame_info_required.get_values())
         DBUpdate.update_shooter_PIN_info(shooter_id=shooter_id, values=self.frame_info_PIN.get_values())
         DBUpdate.update_shooter_general_info(shooter_id=shooter_id, values=self.frame_info_basic.get_values())
         DBUpdate.update_shooter_contact_info(shooter_id=shooter_id, values=self.frame_info_contact.get_values())
 
-    def UpdateShooterDetails(self, shooter_id: int):
-        self.frame_info_required.UpdateValues(DBGetter.get_shooter_required_info(shooter_id))
-        self.frame_info_PIN.UpdateValues(DBGetter.get_shooter_PIN_info(shooter_id))
-        self.frame_info_basic.UpdateValues(DBGetter.get_shooter_general_info(shooter_id))
-        self.frame_info_contact.UpdateValues(DBGetter.get_shooter_contact_info(shooter_id))
-        self.frame_info_notes.UpdateValues()
-        #self.frame_weapons.set_shooter_id_and_refresh(shooter_id)
+    def update_shooter_details(self, shooter_id: int):
+        self.frame_info_required.update_values(DBGetter.get_shooter_required_info(shooter_id))
+        self.frame_info_PIN.update_values(DBGetter.get_shooter_PIN_info(shooter_id))
+        self.frame_info_basic.update_values(DBGetter.get_shooter_general_info(shooter_id))
+        self.frame_info_contact.update_values(DBGetter.get_shooter_contact_info(shooter_id))
+        self.frame_info_notes.update_values()

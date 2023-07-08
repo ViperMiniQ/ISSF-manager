@@ -136,7 +136,7 @@ class ResultsAdditional(tk.Frame):
             text="<",
             fg="black",
             font=self.r_font,
-            command=lambda: self.LeftAnchor()
+            command=lambda: self.set_text_left_anchor()
         )
 
         self.btn_center_anchor = tk.Button(
@@ -144,7 +144,7 @@ class ResultsAdditional(tk.Frame):
             text="<>",
             fg="black",
             font=self.r_font,
-            command=lambda: self.CenterAnchor()
+            command=lambda: self.set_text_center_anchor()
         )
 
         self.btn_right_anchor = tk.Button(
@@ -152,7 +152,7 @@ class ResultsAdditional(tk.Frame):
             text=">",
             fg="black",
             font=self.r_font,
-            command=lambda: self.RightAnchor()
+            command=lambda: self.set_text_right_anchor()
         )
 
         self.btn_results_settings = tk.Button(
@@ -173,95 +173,13 @@ class ResultsAdditional(tk.Frame):
             anchor="n"
         )
 
-        self.btn_change_row_color_even = tk.Button(  # even
-            self,
-            text="P",
-            fg="black",
-            bg="yellow",
-            command=lambda: self.NewTreeEvenRowColor(),
-            font=self.r_font
-        )
-        btn_change_row_color_help_text = "Promjeni pozadinsku boju parnih redova dnevnika"
-        self.btn_change_row_color_help = HoverInfo.create_tooltip(
-            widget=self.btn_change_row_color_even,
-            text=btn_change_row_color_help_text,
-            font_size=12,
-            orientation="left",
-            anchor="n"
-        )
-
-        self.btn_change_row_color_odd = tk.Button(  # odd
-            self,
-            text="N",
-            fg="black",
-            bg="yellow",
-            command=lambda: self.NewTreeOddRowColor(),
-            font=self.r_font
-        )
-        btn_change_row_color_odd_help_text = "Promjeni pozadinsku boju nepranih redova dnevnika"
-        self.btn_change_row_color_odd_help = HoverInfo.create_tooltip(
-            widget=self.btn_change_row_color_odd,
-            text=btn_change_row_color_odd_help_text,
-            font_size=12,
-            orientation="left",
-            anchor="n"
-        )
-
-        self.btn_increase_font = tk.Button(
-            self,
-            text="A",
-            bg="blue",
-            fg="white",
-            font=self.r_font,
-            command=lambda: self.IncreaseFont()
-        )
-        btn_increase_font_help_text = "Povećaj veličinu fonta dnevnika"
-        self.btn_increase_font_help = HoverInfo.create_tooltip(
-            widget=self.btn_increase_font,
-            text=btn_increase_font_help_text,
-            font_size=12,
-            orientation="left",
-            anchor="n"
-        )
-
-        self.btn_decrease_font = tk.Button(
-            self,
-            text="a",
-            bg="blue",
-            fg="white",
-            font=self.r_font,
-            command=lambda: self.DecreaseFont()
-        )
-        btn_decrease_font_help_text = "Smanji veličinu fonta dnevnika"
-        self.btn_decrease_font_help = HoverInfo.create_tooltip(
-            widget=self.btn_decrease_font,
-            text=btn_decrease_font_help_text,
-            font_size=12,
-            orientation="left",
-            anchor="n"
-        )
-
-        self.btn_hide_input = tk.Button(
-            self,
-            text=" ",
-            bg="black",
-            command=lambda: self.hide_input(),
-            bd=5
-        )
-
         self.btn_adjust_columns_by_text.grid(row=0, column=5, sticky="nsew")
         self.btn_refresh.grid(row=0, column=4, sticky="nsew")
         self.btn_delete.grid(row=0, column=3, sticky="nsew")
         self.btn_edit.grid(row=0, column=2, sticky="nsew")
         self.btn_filter.grid(row=0, column=1, sticky="nsew")
         self.btn_treeview_select_columns.grid(row=0, column=0, sticky="nsew")
-        #self.btn_change_row_color_odd.grid(row=0, column=9, sticky="nsew")
-        #self.btn_change_row_color_even.grid(row=0, column=8, sticky="nsew")
         self.btn_results_settings.grid(row=0, column=11, columnspan=2, sticky="nsew")
-        #self.btn_increase_font.grid(row=0, column=10, sticky="nsew")
-        #self.btn_decrease_font.grid(row=0, column=11, sticky="nsew")
-
-        #self.btn_hide_input.grid(row=0, column=14, sticky="nsew")
 
     def keep_aspect_ratio(self):
         pass
@@ -272,14 +190,16 @@ class ResultsAdditional(tk.Frame):
     def adjust_columns_by_text(self):
         self.controller.AdjustColumnsSizePressed()
 
-    def RightAnchor(self):
+    def set_text_right_anchor(self):
         pass
 
-    def LeftAnchor(self):
+    def set_text_left_anchor(self):
         pass
 
-    def CenterAnchor(self):
+    def set_text_center_anchor(self):
         pass
+
+    # TODO: merge this class with Results and inject ResutsTree class to it to avoid calling controller
 
     def Edit(self):
         self.controller.EditPressed()
@@ -290,43 +210,11 @@ class ResultsAdditional(tk.Frame):
     def SelectColumnsToDisplay(self):
         self.controller.UpdateTreeviewDispayColumns()
 
-    
-    def NewFrameInputColor(self):
-        color = self.PickColor()
-        if color:
-            self.controller.ChangeFrameInputColor(color)
-
-    
-    def PickColor(self):
-        notification_color = colorchooser.askcolor(title="Izaberite boju")
-        if notification_color:
-            color = notification_color[1]
-            return color
-        return False
-
-    
-    def NewTreeEvenRowColor(self):
-        color = self.PickColor()
-        if color:
-            self.controller.ChangeTreeEvenColor(color)
-
-    
-    def NewTreeOddRowColor(self):
-        color = self.PickColor()
-        if color:
-            self.controller.ChangeTreeOddColor(color)
-
     def Filter(self):
         self.controller.FilterPressed()
 
     def Refresh(self):
         self.controller.RefreshPressed()
-
-    def IncreaseFont(self):
-        self.controller.IncreaseFontPressed()
-
-    def DecreaseFont(self):
-        self.controller.DecreaseFontPressed()
 
 
 class ResultsSettingsToplevel(tk.Toplevel):

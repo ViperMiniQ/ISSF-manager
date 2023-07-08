@@ -73,7 +73,7 @@ class CustomBox(ttk.Combobox):
     config = configure
 
 
-class tkcalnder_CalendarMonthYearEntry(Calendar):
+class tkcalendarCalendarYearEntryField(Calendar):
     def __init__(self, master=None, **kw):
         super().__init__(master, **kw)
 
@@ -168,12 +168,13 @@ class tkcalnder_CalendarMonthYearEntry(Calendar):
 
 
 class DateEntry2(tkcalendar.DateEntry):
+    """integrates new tkcalendarCalendarYearEntryField"""
     def __init__(self, master=None, **kw):
         super().__init__(master, **kw)
 
         kw.pop("state", None)
         self._calendar.pack_forget()
-        self._calendar = tkcalnder_CalendarMonthYearEntry(self._top_cal, **kw)
+        self._calendar = tkcalendarCalendarYearEntryField(self._top_cal, **kw)
         self._calendar.pack()
 
         self._calendar.bind('<<CalendarSelected>>', self._select)

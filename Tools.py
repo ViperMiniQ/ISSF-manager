@@ -32,6 +32,7 @@ def TranslateCategoriesToList(categories: int):
     array.reverse()
     return array
 
+
 def TranslateCategoriesToInt(categories: List):
     """ KAD = 2^0, JUN = 2^1, SEN = 2^2, VET = 2^3 """
     categories_list = ["KAD", "JUN", "SEN", "VET"]
@@ -69,7 +70,7 @@ def SQL_date_format_to_croatian(date: str):
         return result
     try:
         result = datetime.strptime(date, sql_date_format).strftime(croatian_date_format)
-    except:
+    except Exception:
         result = ""
     finally:
         return result
@@ -89,7 +90,7 @@ def croatian_date_format_to_SQL(date: str):
     result = ""
     try:
         result = datetime.strptime(date, croatian_date_format).strftime(sql_date_format)
-    except:
+    except Exception:
         result = ""
     finally:
         return result
@@ -184,7 +185,6 @@ def clone_widget(widget, master=None):
             place_info = {k: v for k, v in child.place_info().items() if k not in {'in'}}
             child_cloned.place(**place_info)
         else:
-            print(child)
             pack_info = {k: v for k, v in child.pack_info().items() if k not in {'in'}}
             child_cloned.pack(**pack_info)
 

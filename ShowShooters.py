@@ -24,8 +24,6 @@ class ShowShooters(tk.Toplevel):
         self.protocol("WM_DELETE_WINDOW", self.exit_pressed)
         self.frame_shooters = CheckbuttonFrame.CheckboxFrame(
             self,
-            100,
-            100,
             self.values,
             14,
             "deep sky blue",

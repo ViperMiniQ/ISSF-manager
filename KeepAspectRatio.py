@@ -4,7 +4,7 @@ _subscribers = []
 
 x = 800
 y = 600
-startup = "fullscreen"  # can be either full_screen or window
+startup = "fullscreen"  # can be either fullscreen or window
 
 
 def subscribe(object: Any):
@@ -12,20 +12,19 @@ def subscribe(object: Any):
 
 
 def call_subscribers(subscriber=None):
-    print("__calling all subsribers__")
     if subscriber is not None:
         for o in _subscribers:
             if o.__class__.__name__ == subscriber:
                 try:
                     o.keep_aspect_ratio()
                     break
-                except:
+                except Exception:
                     pass
         return
     for o in _subscribers:
         try:
             o.keep_aspect_ratio()
-        except:
+        except Exception:
             pass
 
 

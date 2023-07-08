@@ -1,7 +1,6 @@
 import tkinter as tk
 from CustomWidgets import DateEntry2
 import tkinter.font as tkFont
-import ScrollableFrame
 import Changes
 from dbcommands_rewrite import DBUpdate, DBAdder
 
@@ -221,45 +220,3 @@ class NotificationDeletable(Notification):
     def set_as_read(self):
         DBUpdate.other_reminder_read(self.notif_id)
         Changes.call_refresh_reminders()
-
-
-class WindowNotifications(tk.Toplevel):
-    def __init__(self, master, window_title, width, height):
-        tk.Toplevel.__init__(self, master)
-        self.geometry("{}x{}".format(width, height))
-        self.resizable(False, False)
-        self.font = tkFont.Font(size=20)
-        self.x = width
-        self.y = height
-        self.title(window_title)
-        self.reminders = []
-        self.row = 0
-        self.lbl_date = tk.Label(
-            self,
-            text=window_title,
-            font=self.font,
-            fg="white",
-            bg="black"
-        )
-        self.lbl_date.pack(side="top", fill="x")
-        self.frame_reminders = ScrollableFrame.Vertical(self)
-        self.frame_reminders.grid_propagate(False)
-        self.frame_reminders.scrollable_frame.columnconfigure(0, weight=1)
-        self.frame_reminders.pack(side="top", expand=True, fill="both")
-
-    def AddNewReminder(self, title, text, frame_color, txt_color):
-        reminder = Notification(self.frame_reminders.scrollable_frame, controller=self,
-            title=title, text=text, date="", frame_color=frame_color, txt_color=txt_color, type_="", id=0, font=tkFont.Font(size=14))
-        self.reminders.append(reminder)
-        self.reminders[-1].grid(row=self.row, column=0, sticky="nsew")
-        self.row += 1
-        self.PackEmptyLabel()
-        self.reminders[-1].keep_aspect_ratio()
-
-    def PackEmptyLabel(self):
-        lbl = tk.Label(
-            self.frame_reminders.scrollable_frame,
-            text=""
-        )
-        lbl.grid(row=self.row, column=0, sticky="ew")
-        self.row += 1

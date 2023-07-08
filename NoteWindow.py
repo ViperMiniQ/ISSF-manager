@@ -31,7 +31,7 @@ class NoteWindow(tk.Toplevel):
             fg="white",
             bg="blue",
             font=self.font_btn,
-            command=lambda: self.IncreaseFontSize()
+            command=lambda: self.increase_font_size()
         )
 
         self.btn_decrease_font_size = tk.Button(
@@ -40,7 +40,7 @@ class NoteWindow(tk.Toplevel):
             fg="white",
             bg="blue",
             font=self.font_btn,
-            command=lambda: self.DecreaseFontSize()
+            command=lambda: self.decrease_font_size()
         )
 
         self.txt_note.pack(side="top", expand=True, fill="both")
@@ -55,8 +55,8 @@ class NoteWindow(tk.Toplevel):
     def close(self, event):
         self.destroy()
 
-    def DecreaseFontSize(self):
+    def decrease_font_size(self):
         self.font["size"] = self.font["size"] - 1
 
-    def IncreaseFontSize(self):
+    def increase_font_size(self):
         self.font["size"] = self.font["size"] + 1

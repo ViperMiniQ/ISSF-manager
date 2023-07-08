@@ -13,7 +13,6 @@ class CompetitionInfo(TypedDict):
     hss_id: int
 
 
-# TODO: removed Ukljuceno from sqlTypes.CompetitionWithPosition
 class CompetitionWithPosition(CompetitionInfo):
     Pozicija: int
 
@@ -126,38 +125,32 @@ class ShootersBasicInfoWithPosition(ShooterBasicInfo):
     Pozicija: int
 
 
-# TODO: sqlTypes.Program got Opis: str added
 class Program(TypedDict):
     Naziv: str
     Opis: str
     id: int
 
 
-# TODO: removed Ukljuceno from ProgramWithPosition
 class ProgramWithPositon(Program):
     Pozicija: int
 
 
-# TODO: sqlTypes.Target got Opis: str added
 class Target(TypedDict):
     Naziv: str
     Opis: str
     id: int
 
 
-# TODO: sqltypes.TargetWithPosition got Ukljuceno removed
 class TargetWithPositon(Target):
     Pozicija: int
 
 
-# TODO: sqlTypes.Discipline got Opis: str added
 class Discipline(TypedDict):
     Naziv: str
     Opis: str
     id: int
 
 
-# TODO: sqlTypes.DisciplineWithPosition got Ukljuceno removed
 class DisciplineWithPosition(Discipline):
     Pozicija: int
 

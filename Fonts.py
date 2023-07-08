@@ -1,9 +1,8 @@
-# NEED TO BE CALLED BEFORE ANY OTHER MODULE LOADS THAT IS USING FONTS
+# NEED TO BE CALLED BEFORE ANY OTHER MODULE LOADS THAT IS USING FONTS ELSE ERROR OCCURS IN TK() CALL
 import tkinter.font as tkFont
 
 import ApplicationProperties
 import ScrollableFrame
-# import dbcommands
 import KeepAspectRatio
 import tkinter as tk
 from tkinter import ttk
@@ -31,8 +30,6 @@ def _get_font(font_config: jsonTypes.FontSettings, fullscreen_size=0) -> tkFont.
 
 
 fonts2 = JSONManager.load_json(ApplicationProperties.FONTS_PATH)
-
-# fonts2 = {}
 
 
 def _get_font_settings(font: tkFont.Font) -> jsonTypes.FontSettings:
@@ -63,7 +60,7 @@ def configure_fonts2_for_save(current):
                 current.update(font_settings)
                 current["divisor"] = divisor
                 return
-            except:
+            except Exception:
                 return
         configure_fonts2_for_save(value)
 
@@ -75,17 +72,17 @@ def save_fonts2_config(save_as_is: bool = False):
     JSONManager.save_json(ApplicationProperties.FONTS_PATH, fonts2)
 
 
-def load_fonts_needs_better_name(current, fullscreen_size=0):
+def recursively_load_fonts(current, fullscreen_size=0):
     for key, value in current.items():
         if not isinstance(value, dict):
             current["font"] = _get_font(current, fullscreen_size)
             return
-        load_fonts_needs_better_name(value, fullscreen_size)
+        recursively_load_fonts(value, fullscreen_size)
 
 
 def load_fonts2(fullscreen_size=0):
     global fonts2
-    load_fonts_needs_better_name(fonts2, fullscreen_size)
+    recursively_load_fonts(fonts2, fullscreen_size)
 
 
 def refresh_available_fonts():

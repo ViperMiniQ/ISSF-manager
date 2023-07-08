@@ -97,21 +97,13 @@ class ShootersList(ComboboxBasicManager.ItemBasicManager):
         self._clear_lbx()
         try:
             self.lbx_menu.delete("Učini stalnim članom")
-        except:
+        except Exception:
             pass
-        #if self.cbx.get() == "Nisu registrirani":
-        #    shooters = self.s.GetNotRegisteredShooters()
-       ### #if self.cbx.get() == "Istekao liječnićki":
-       ### #    shooters = DBGetter.get_registered_shooters_with_expired_doctors() # self.s.GetShooterWithExpiredDoctors()
-        #elif self.cbx.get() == "Istekla osobna":
-        #    shooters = self.s.GetShootersWithExpiredNPIN()
-        #elif self.cbx.get() == "Nedostaje obvezno":
-        #    shooters = self.s.GetShootersWithMissingRequired()
         if self.cbx.get() == "Bivši članovi":
             shooters = DBGetter.get_retired_shooters()
             self.lbx_menu.add_command(label="Učini stalnim članom", command=self.activate_shooter)
         else:
-            shooters = DBGetter.get_active_shooters() + DBGetter.get_inactive_shooters() #self.s.GetShootersBasicInfo()
+            shooters = DBGetter.get_active_shooters() + DBGetter.get_inactive_shooters()
         for shooter in shooters:
             date = Tools.SQL_date_format_to_croatian(shooter['Datum'])
             lbx_shooter = f"{shooter['Ime']} {shooter['Prezime']} ({date})"

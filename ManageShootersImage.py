@@ -54,7 +54,7 @@ class ShooterImage(tk.Frame):
             self.image = None
             self.remove_image()
 
-    def UpdateValues(self, shooter_id: int):
+    def update_values(self, shooter_id: int):
         self.shooter_id = shooter_id
         self.load_shooter_image(ApplicationProperties.SHOOTER_IMAGES_DIR + str(shooter_id) + self.image_extension)
 

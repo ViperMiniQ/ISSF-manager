@@ -8,6 +8,9 @@ from typing import List
 import datetime
 
 
+# should replace entire module with SQLALCHEMY module for database manipulation
+
+
 class DBConnector:
     filepath = ""
 
@@ -830,9 +833,7 @@ class DBGetter:
             query += f" WHERE serijski_broj='{serial_no}'"
         elif cylinder_id:
             query += f" WHERE id={cylinder_id}"
-        print(query)
         data = DBManipulator.fetch_row(query)
-        print(data)
         if not data[0]:
             return {}
 
@@ -1034,7 +1035,7 @@ class DBGetter:
                 "Napomena": d[5],
                 "id": competition_id,
             }
-        except:
+        except Exception:
             pass
         return competition_info
 
@@ -1088,7 +1089,7 @@ class DBGetter:
                     "id_strijelac": shooter_id
                 }
                 dictionaries.append(dictionary)
-        except:
+        except Exception:
             pass
         return dictionaries
 
@@ -1117,7 +1118,7 @@ class DBGetter:
                 "Mobitel2": d[3],
                 "Email": d[4]
             }
-        except:
+        except Exception:
             dictionary = {}
         return dictionary
 
@@ -1146,7 +1147,7 @@ class DBGetter:
                 "Banka": d[3],
                 "Ziro": d[4]
             }
-        except:
+        except Exception:
             dictionary = {}
         return dictionary
 
@@ -1183,7 +1184,7 @@ class DBGetter:
                 "PutovnicaMjesto": d[7],
                 "Drzavljanstvo": d[8]
             }
-        except:
+        except Exception:
             dictionary = {}
         return dictionary
 
@@ -1285,7 +1286,7 @@ class DBGetter:
                     "Napomena": d[5]
                 }
                 competitions.append(competition)
-        except:
+        except Exception:
             pass
         finally:
             return competitions
@@ -1306,7 +1307,6 @@ class DBGetter:
             SELECT startne_liste_path FROM natjecanja WHERE id_natjecanja={competition_id}
             """
         data = DBManipulator.fetch_row(select)[0]
-        print(select, data)
         if data:
             return data[0]
         return None
@@ -1346,7 +1346,7 @@ class DBGetter:
                 "Datum": values[2],
                 "Spol": values[3]
             }
-        except:
+        except Exception:
             dictionary = {}
         return dictionary
 
@@ -1380,7 +1380,7 @@ class DBGetter:
                     "pdf_id": row[6]
                 }
                 registrations.append(registration)
-        except:
+        except Exception:
             pass
         finally:
             return registrations
@@ -1415,7 +1415,7 @@ class DBGetter:
                     "pdf_id": row[6]
                 }
                 doctors.append(doctor)
-        except:
+        except Exception:
             pass
         finally:
             return doctors
@@ -1484,7 +1484,7 @@ class DBGetter:
                     "Procitana": row[4]
                 }
                 reminders.append(reminder)
-        except:
+        except Exception:
             pass
         finally:
             return reminders
@@ -1512,7 +1512,7 @@ class DBGetter:
                     "Procitana": row[4]
                 }
                 reminders.append(reminder)
-        except:
+        except Exception:
             pass
         finally:
             return reminders
@@ -1557,7 +1557,7 @@ class DBGetter:
                     "DatumIstekaOI": row[5]
                 }
                 shooters.append(shooter)
-        except:
+        except Exception:
             pass
         finally:
             return shooters
@@ -1598,7 +1598,7 @@ class DBGetter:
                     "DatumIstekaOI": row[5]
                 }
                 shooters.append(shooter)
-        except:
+        except Exception:
             pass
         finally:
             return shooters
@@ -1631,7 +1631,7 @@ class DBGetter:
                     "id": row[4]
                 }
                 shooters.append(shooter)
-        except:
+        except Exception:
             pass
         finally:
             return shooters
@@ -1667,7 +1667,7 @@ class DBGetter:
                     "DatumIstekaLijecnickog": "1000-00-00"
                 }
                 shooters.append(shooter)
-        except:
+        except Exception:
             pass
         finally:
             return shooters
@@ -1710,7 +1710,7 @@ class DBGetter:
                     "DatumIstekaLijecnickog": row[5]
                 }
                 shooters.append(shooter)
-        except:
+        except Exception:
             pass
         return shooters
 
@@ -1753,7 +1753,7 @@ class DBGetter:
                     "DatumIstekaLijecnickog": row[5]
                 }
                 shooters.append(shooter)
-        except:
+        except Exception:
             pass
         finally:
             return shooters
@@ -1874,7 +1874,7 @@ class DBGetter:
                     "id": row[5]
                 }
                 shooters.append(shooter)
-        except:
+        except Exception:
             pass
         finally:
             return shooters
@@ -1905,7 +1905,7 @@ class DBGetter:
                     "id": row[4]
                 }
                 shooters.append(shooter)
-        except:
+        except Exception:
             pass
         return shooters
 
@@ -1937,7 +1937,7 @@ class DBGetter:
                     "Pozicija": row[5]
                 }
                 shooters.append(shooter)
-        except:
+        except Exception:
             pass
         return shooters
 
@@ -1968,7 +1968,7 @@ class DBGetter:
                     "id": row[4]
                 }
                 shooters.append(shooter)
-        except:
+        except Exception:
             pass
         finally:
             return shooters
@@ -2006,7 +2006,7 @@ class DBGetter:
                     "hss_id": row[8]
                 }
                 competitions.append(competition)
-        except:
+        except Exception:
             pass
         return competitions
 
@@ -2042,7 +2042,7 @@ class DBGetter:
                     "hss_id": d[7],
                 }
                 competitions.append(competition)
-        except:
+        except Exception:
             pass
         finally:
             return competitions
@@ -2083,7 +2083,7 @@ class DBGetter:
                     "hss_id": row[9]
                 }
                 competitions.append(competition)
-        except:
+        except Exception:
             pass
         finally:
             return competitions
@@ -2114,7 +2114,7 @@ class DBGetter:
                     "id": row[4]
                 }
                 shooters.append(shooter)
-        except:
+        except Exception:
             pass
         finally:
             return shooters
@@ -2143,7 +2143,7 @@ class DBGetter:
                     "Pozicija": row[3]
                 }
                 disciplines.append(discipline)
-        except:
+        except Exception:
             pass
         finally:
             return disciplines
@@ -2169,7 +2169,7 @@ class DBGetter:
                     "Opis": row[2]
                 }
                 disciplines.append(discipline)
-        except:
+        except Exception:
             pass
         finally:
             return disciplines
@@ -2193,7 +2193,7 @@ class DBGetter:
                     "id": row[2]
                 }
                 disciplines.append(discipline)
-        except:
+        except Exception:
             pass
         finally:
             return disciplines
@@ -2218,7 +2218,7 @@ class DBGetter:
                     "Opis": row[2]
                 }
                 targets.append(target)
-        except:
+        except Exception:
             pass
         finally:
             return targets
@@ -2242,7 +2242,7 @@ class DBGetter:
                     "id": row[2]
                 }
                 targets.append(target)
-        except:
+        except Exception:
             pass
         finally:
             return targets
@@ -2267,7 +2267,7 @@ class DBGetter:
                     "Opis": row[2]
                 }
                 programs.append(program)
-        except:
+        except Exception:
             pass
         finally:
             return programs
@@ -2356,7 +2356,7 @@ class DBGetter:
                     "id": row[2]
                 }
                 programs.append(program)
-        except:
+        except Exception:
             pass
         finally:
             return programs
@@ -2383,7 +2383,7 @@ class DBGetter:
                     "id": row[2]
                 }
                 programs.append(program)
-        except:
+        except Exception:
             pass
         finally:
             return programs
@@ -2412,7 +2412,7 @@ class DBGetter:
                     "Pozicija": row[3]
                 }
                 programs.append(program)
-        except:
+        except Exception:
             pass
         finally:
             return programs
@@ -2439,7 +2439,7 @@ class DBGetter:
                     "id": row[2]
                 }
                 programs.append(program)
-        except:
+        except Exception:
             pass
         finally:
             return programs
@@ -2468,7 +2468,7 @@ class DBGetter:
                     "id": row[2]
                 }
                 disciplines.append(discipline)
-        except:
+        except Exception:
             pass
         finally:
             return disciplines
@@ -2496,7 +2496,7 @@ class DBGetter:
                     "id": row[2]
                 }
                 disciplines.append(discipline)
-        except:
+        except Exception:
             pass
         finally:
             return disciplines
@@ -2526,7 +2526,7 @@ class DBGetter:
                     "Pozicija": row[3]
                 }
                 targets.append(target)
-        except:
+        except Exception:
             pass
         finally:
             return targets
@@ -2553,7 +2553,7 @@ class DBGetter:
                     "id": row[2]
                 }
                 targets.append(target)
-        except:
+        except Exception:
             pass
         finally:
             return targets
@@ -2580,7 +2580,7 @@ class DBGetter:
                     "id": row[2]
                 }
                 targets.append(target)
-        except:
+        except Exception:
             pass
         finally:
             return targets
@@ -2708,7 +2708,7 @@ class DBGetter:
                         "id": d[0]
                     }
                 )
-        except:
+        except Exception:
             pass
         finally:
             return programs
@@ -2737,7 +2737,7 @@ class DBGetter:
                         "id": d[0]
                     }
                 )
-        except:
+        except Exception:
             pass
         finally:
             return disciplines
@@ -2766,7 +2766,7 @@ class DBGetter:
                         "id": d[0]
                     }
                 )
-        except:
+        except Exception:
             pass
         finally:
             return targets
@@ -2854,7 +2854,7 @@ class DBGetter:
                     "Napomena": value[17]
                 }
                 dictionaries_list.append(dictionary_values)
-        except:
+        except Exception:
             pass
         finally:
             return dictionaries_list
@@ -2897,7 +2897,7 @@ class DBGetter:
                         "hss_id": d[8]
                     }
                 )
-        except:
+        except Exception:
             pass
         return dictionaries
 
@@ -3810,8 +3810,6 @@ class DBManipulator:
             db.commit()
             return True
         except Exception as e:
-            print(e)
-            print(query)
             return False
 
     @classmethod
@@ -3827,107 +3825,7 @@ class DBManipulator:
         except Exception as e:
             logging.log(logging.ERROR, e)
             logging.log(logging.ERROR, query)
-            print(e)
-            print(query)
             data = [()]
         if not data:
             data = [()]
         return data
-
-"""
-SELECT 
-	strijelci.ime, -- 0
-	strijelci.prezime, -- 1
-	strijelci.spol, -- 2
-	strijelci.datRod, -- 3
-	strijelci.id_strijelac, -- 4
-	MAX(registracije.datum_do) -- 5
-FROM strijelci
-LEFT JOIN registracije ON strijelci.id_strijelac=registracije.id_strijelac
-WHERE registracije.datum_do>'2020-10-10'
-GROUP BY strijelci.id_strijelac
-ORDER BY registracije.datum_do
-
-SELECT
-	strijelci.ime, -- 0
-	strijelci.prezime, -- 1
-	strijelci.spol, -- 2
-	strijelci.datRod, -- 3
-	strijelci.id_strijelac, -- 4
-	MAX(registracije.datum_do), -- 5
-	MAX(pdf_lijecnicki.datum_do) -- 6
-FROM strijelci
-LEFT JOIN registracije on strijelci.id_strijelac=registracije.id_strijelac
-LEFT JOIN pdf_lijecnicki ON pdf_lijecnicki.id_strijelac=strijelci.id_strijelac
-WHERE --strijelci.id_strijelac NOT IN (SELECT pdf_lijecnicki.id_strijelac FROM pdf_lijecnicki)
-	registracije.datum_do>'2020-10-10'
-	AND pdf_lijecnicki.datum_do>'2020-10-10'
-GROUP BY strijelci.id_strijelac
-
-SELECT * FROM pdf_lijecnicki WHERE id_strijelac=30
-SELECT * FROM registracije WHERE id_strijelac=30
-
-SELECT 
-	strijelci.ime, -- 0
-	strijelci.prezime, -- 1
-	strijelci.spol, -- 2
-	strijelci.datRod, -- 3
-	strijelci.id_strijelac, -- 4
-	MAX(pdf_lijecnicki.datum_do) -- 5
-FROM strijelci
-LEFT JOIN pdf_lijecnicki ON pdf_lijecnicki.id_strijelac=strijelci.id_strijelac
-LEFT JOIN strijelci_hss ON strijelci_hss.id_strijelac=strijelci.id_strijelac
-LEFT JOIN strijelci_obavijesti ON strijelci_obavijesti.id_strijelac=strijelci.id_strijelac
-WHERE strijelci_obavijesti.lijecnicki = 1
-	AND pdf_lijecnicki.datum_do<date('2022-10-15') 
-GROUP BY strijelci.id_strijelac
-ORDER BY pdf_lijecnicki.datum_do
-
-SELECT
-	strijelci.ime, -- 0
-	strijelci.prezime, -- 1
-	strijelci.spol, -- 2
-	strijelci.datRod, -- 3
-	strijelci.id_strijelac -- 4
-FROM strijelci
-LEFT JOIN strijelci_hss ON strijelci_hss.id_strijelac=strijelci.id_strijelac
-WHERE strijelci.id_strijelac NOT IN (SELECT pdf_lijecnicki.id_strijelac FROM pdf_lijecnicki)
-	AND strijelci_hss.registracija = 1
-SELECT ID, Name 
-FROM   Table1 
-WHERE  ID NOT IN (SELECT ID FROM Table2)
-
-
---------- test
-
-SELECT 
-	strijelci.ime, -- 0
-	strijelci.prezime, -- 1
-	strijelci.spol, -- 2
-	strijelci.datRod, -- 3
-	strijelci.id_strijelac, -- 4
-	MAX(pdf_lijecnicki.datum_do) -- 5
-FROM strijelci
-LEFT JOIN pdf_lijecnicki ON pdf_lijecnicki.id_strijelac=strijelci.id_strijelac
-LEFT JOIN strijelci_hss ON strijelci_hss.id_strijelac=strijelci.id_strijelac
-LEFT JOIN strijelci_obavijesti ON strijelci_obavijesti.id_strijelac=strijelci.id_strijelac
-WHERE pdf_lijecnicki.datum_do<date('2022-10-15') 
-GROUP BY strijelci.id_strijelac
-
-
-CREATE TABLE obavijesti_strijelci(
-	id_obavijesti INTEGER PRIMARY KEY AUTOINCREMENT,
-	id_strijelac INTEGER,
-	tekst TEXT,
-	datum TEXT,
-	procitana INT
-);
-
-CREATE TABLE obavijesti_oruzje(
-	id_obavijesti INTEGER PRIMARY KEY AUTOINCREMENT,
-	id_oruzje INTEGER,
-	tekst TEXT,
-	datum TEXT,
-	procitana INTEGER
-);
-"""

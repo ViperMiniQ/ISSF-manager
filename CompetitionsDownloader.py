@@ -258,7 +258,7 @@ class Preview(tk.Frame):
             c['Datum'] = Tools.croatian_date_from_utc_milliseconds(int(c['utc_start']))
             c['Unešeno'] = ""
 
-            self.frame_tree.AddResultToTree(c, True)
+            self.frame_tree.add_values_to_row(c, True)
 
         self.preview_competitions()
         self.configure(cursor="")
@@ -272,8 +272,7 @@ class Preview(tk.Frame):
         for c in competitions:
             c["Unešeno"] = self.selected_symbol if c['hss_id'] in competitions_hss_ids else ''
             c['Datum'] = Tools.croatian_date_from_utc_milliseconds(int(c['utc_start']))
-            self.frame_tree.AddResultToTree(c)
+            self.frame_tree.add_values_to_row(c)
         self.frame_tree.keep_aspect_ratio()
-        #self.frame_tree.adjust_all_columns_default()
         self.frame_tree.adjust_all_columns_by_text_length()
 

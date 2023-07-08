@@ -157,7 +157,7 @@ def experimental_download_bilten(competition_id: int):
                 message="Datoteka nije pronađena."
             )
             return False
-        except:
+        except Exception:
             messagebox.showerror(title="Greška", message="Greška u preuzimanju biltena.")
             return False
     messagebox.showerror(
@@ -184,7 +184,7 @@ def experimental_download_startne_liste(competition_id: int):
                 )
             messagebox.showinfo(title="Startne liste", message="Datoteka je uspješno preuzeta.")
             return True
-        except:
+        except Exception:
             messagebox.showerror(title="Greška", message="Greška u preuzimanju biltena.")
             return False
     return False
@@ -196,7 +196,7 @@ def add_bilten(parent, competition_id: int):
         try:
             filename_save_as = str(competition_id) + "_bilten." + filename.split('.')[-1]
             shutil.copy(filename, ApplicationProperties.LOCATION + bilten_path + filename_save_as)
-        except:
+        except Exception:
             messagebox.showerror(title="Bilten",
                                  message="Greška dodavanja datoteke, pokušajte pokrenuti program kao administrator.")
             return False
@@ -212,7 +212,7 @@ def add_startne_liste(parent, competition_id: int):
         try:
             filename_save_as = str(competition_id) + "_startne_liste." + filename.split('.')[-1]
             shutil.copy(filename, ApplicationProperties.LOCATION + startne_liste_path + filename_save_as)
-        except:
+        except Exception:
             messagebox.showerror(title="Startne liste",
                                  message="Greška dodavanja datoteke, pokušajte pokrenuti program kao administrator.")
             return False
@@ -228,7 +228,7 @@ def add_pozivno_pismo(parent, competition_id: int):
         try:
             filename_save_as = str(competition_id) + "_pozivno_pismo." + filename.split('.')[-1]
             shutil.copy(filename, ApplicationProperties.LOCATION + pozivno_pismo_path + filename_save_as)
-        except:
+        except Exception:
             messagebox.showerror(title="Pozivno pismo",
                                  message="Greška dodavanja datoteke, pokušajte pokrenuti program kao administrator.")
             return False
@@ -254,6 +254,6 @@ def experimental_download_pozivno_pismo(competition_id: int):
                                                           pozivno_pismo_path + filename + "." + extension)
             messagebox.showinfo(title="Pozivno pismo", message="Datoteka je uspješno preuzeta.")
             return True
-        except:
+        except Exception:
             messagebox.showerror(title="Greška", message="Greška u preuzimanju biltena.")
             return False

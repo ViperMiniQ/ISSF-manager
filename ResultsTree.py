@@ -5,7 +5,6 @@ from datetime import datetime
 import CheckbuttonFrame
 from collections import Counter
 
-# https://www.geeksforgeeks.org/hierarchical-treeview-in-python-gui-application/
 from typing import List
 import Tools
 import Colors
@@ -65,8 +64,8 @@ class ResultsTree(tk.Frame):
         self.tree_shooter.pack(side="left", expand=True, fill="both")
         self.scr_tree_shooter_vertical.pack(side="right", fill="y")
 
-        self.tree_shooter.bind("i", self.BindI)
-        self.tree_shooter.bind("I", self.BindI)
+        self.tree_shooter.bind("i", self.bind_i)
+        self.tree_shooter.bind("I", self.bind_i)
         self.tree_shooter.tag_configure("font", font=self.tree_item_font)
 
         self.tree_shooter.bind("<Shift-3>", self.double_click_heading)
@@ -123,9 +122,6 @@ class ResultsTree(tk.Frame):
         for column in self.tree_shooter["displaycolumns"]:
             self.adjust_column_size(column, int(tree_column_sizes[column] + adjust_size))
         self.tree_shooter.update()
-
-    def TreeviewReturn(self):
-        pass
 
     def GetColumnsToDisplay(self, dictionary):
         """Returns list of columns to display"""
@@ -202,15 +198,8 @@ class ResultsTree(tk.Frame):
     def adjust_column_size(self, column, size: int, stretch: bool = False):
         self.tree_shooter.column(column, minwidth=size, width=size, stretch=stretch)
 
-    def GetNumberOfTreeviewColumns(self):
-        return len(self.treeview_columns_dict)
-
-    def GetNumberOfItemsInTreeview(self):
+    def get_number_of_rows(self):
         return len(self.tree_shooter.get_children())
-
-    def AddRowToTree(self, values, top=False):
-        """Adds row to treeview, top=False adds it at the bottom, top=True at the top"""
-        pass
 
     def update_selected_row(self, values: dict):
         selection = self.tree_shooter.focus()
@@ -225,7 +214,7 @@ class ResultsTree(tk.Frame):
                     column=key,
                     value=values[key]
                 )
-            except:
+            except Exception:
                 pass
 
     def get_values_of_selected_row(self):
@@ -237,31 +226,22 @@ class ResultsTree(tk.Frame):
         return_values["rowID"] = selection
         return return_values
 
-    def EditTreeviewRowValues(self, row_id, tree_row_values):
+    def edit_row_values(self, row_id, tree_row_values):
         for key, value in self.treeview_columns_dict.items():
             self.tree_shooter.set(row_id, column=key, value=tree_row_values[key])
-
     
-    def ListifyTreeRowValues(self, values_dict):
-        values_list = []
-        for key, value in self.treeview_columns_dict.items():
-            values_list.append(values_dict[key])
-
-        return values_list
-
     def _get_list_from_dictionary_for_insertion(self, dict_):
         prepared_list = []
         for key in self.treeview_columns_dict.keys():
             prepared_list.append(str(dict_[key]))
         return prepared_list
 
-
-    def AddResultToTree(self, tree_row_values_dict, top=False):
+    def add_values_to_row(self, tree_row_values_dict, top=False):
         """tree_values -> dictionary
         top=False add new record at the end, top=True at the top"""
         tree_row_values = self._get_list_from_dictionary_for_insertion(tree_row_values_dict)
 
-        if self.GetNumberOfItemsInTreeview() % 2 == 0:
+        if self.get_number_of_rows() % 2 == 0:
             row = "even_row"
         else:
             row = "odd_row"
@@ -271,35 +251,22 @@ class ResultsTree(tk.Frame):
         else:
             self.tree_shooter.insert("", 0, values=tree_row_values, tags=("font", row))
 
-        #self.refresh_columns_summary()
-
-    
-    def refresh_columns_summary(self):
-        for column in self.tree_shooter["columns"]:
-            column_occurrences = self.get_occurrences_in_column(column)
-            top_5_occurrences = self.get_top_5_occurrences(column_occurrences)
-
-    
     def set_treeview_items_font(self, size: int, family: str =None):
         self.tree_item_font.configure(size=size, family=family)
-
     
     def set_treeview_heading_font(self, size: int, family: str =None):
         self.style.configure(self.str_style + ".Treeview.Heading", font=(family, size))
 
-    
     def set_treeview_heading_height(self, height: int):
         self.style.configure(self.str_style + ".Treeview.Heading", rowheight=height)
 
-    
     def set_treeview_items_height(self, height: int):
         self.style.configure(self.str_style + ".Treeview", rowheight=height)
 
+    def bind_i(self, event=None):
+        self.controller.bind_i()
 
-    def BindI(self, event=None):
-        self.controller.BindI()
-
-    def SetColumnWidth(self, dict, values):
+    def set_column_width(self, dict, values):
         self.update_idletasks()
         x = self.winfo_width() - 17
         if not x:
@@ -326,7 +293,6 @@ class ResultsTree(tk.Frame):
             self.tree_shooter.configure(displaycolumns=columns)
 
     def treeview_sort_column(self, tv, col, col_type, reverse):
-        self.hastag = False
         l = [(tv.set(k, col), k) for k in tv.get_children('')]
         if col_type == "date":
             l.sort(key=lambda x: datetime.strptime(x[0], "%d. %m. %Y."),
@@ -373,11 +339,10 @@ class ResultsTree(tk.Frame):
 
     def keep_aspect_ratio(self, event=None):
         # TODO: what if font size == 0? the program crashes, no exception is raised
-        #self.style.configure(self.str_style + ".Treeview", rowheight=self.tree_item_font["size"])
         self.style.configure(self.str_style + ".Treeview.Heading", font=(None, self.tree_item_font["size"]))
         self.style.configure(self.str_style + ".Treeview.Heading", rowheight=self.tree_item_font["size"])
         self.style.configure(self.str_style + ".Treeview", rowheight=tkFont.Font(font=self.tree_item_font).metrics("linespace"))
-        self.SetColumnWidth(self.treeview_columns_dict, self.treeview_column_widths)
+        self.set_column_width(self.treeview_columns_dict, self.treeview_column_widths)
 
 
 class SelectColumnsToDisplay(tk.Toplevel):
@@ -404,13 +369,12 @@ class SelectColumnsToDisplay(tk.Toplevel):
             fg="black",
             bg="lime",
             font=self.font,
-            command=lambda: self.Confirm()
+            command=lambda: self.confirm_and_exit()
         )
 
         self.btn_confirm.pack(side="top", fill="x")
         self.frame_main.pack(side="top", expand=True, fill="both")
 
-    
-    def Confirm(self):
+    def confirm_and_exit(self):
         self.values = self.frame_main.get_values()
         self.destroy()

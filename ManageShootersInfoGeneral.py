@@ -98,7 +98,7 @@ class ShooterInfoBasic(tk.Frame):
         self.lbl_bank_account.place(relx=0.1, rely=0.58, anchor="nw")
         self.ent_bank_account.place(relx=0.1, rely=0.62, anchor="nw")
 
-    def UpdateValues(self, shooter_general_info: sqlTypes.ShooterGeneralInfo):
+    def update_values(self, shooter_general_info: sqlTypes.ShooterGeneralInfo):
         self.qualifications.set(shooter_general_info['StrucnaSprema'])
         self.job.set(shooter_general_info['Zaposlenje'])
         self.hobby.set(shooter_general_info['Hobi'])

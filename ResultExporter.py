@@ -77,7 +77,7 @@ class ResultExporter(tk.Toplevel):
         self.scr_text_summary_horizontal.configure(command=self.txt_summary.xview)
         self.scr_text_summary_vertical.configure(command=self.txt_summary.yview)
 
-        self.btn_load_config = ttk.Button(
+        self.btn_load_config = tk.Button(
             self.frame_options,
             text="Učitaj",
             font=self.font,
@@ -85,7 +85,7 @@ class ResultExporter(tk.Toplevel):
             command=lambda: self.load_config()
         )
 
-        self.btn_delete_config = ttk.Button(
+        self.btn_delete_config = tk.Button(
             self.frame_options,
             text="Obriši konfiguraciju",
             font=self.font,
@@ -94,7 +94,7 @@ class ResultExporter(tk.Toplevel):
             command=lambda: self.delete_current_config()
         )
 
-        self.btn_save_new_config = ttk.Button(
+        self.btn_save_new_config = tk.Button(
             self.frame_options,
             text="Nova konfiguracija",
             font=self.font,
@@ -103,7 +103,7 @@ class ResultExporter(tk.Toplevel):
             command=lambda: self.create_new_config()
         )
 
-        self.btn_results = ttk.Button(
+        self.btn_results = tk.Button(
             self.frame_summary,
             font=self.font,
             text="Odaberi rezultate",
@@ -112,7 +112,7 @@ class ResultExporter(tk.Toplevel):
             command=lambda: self.get_results()
         )
 
-        self.btn_save_current_config = ttk.Button(
+        self.btn_save_current_config = tk.Button(
             self.frame_options,
             text="Spremi promjene",
             font=self.font,
@@ -128,7 +128,7 @@ class ResultExporter(tk.Toplevel):
             state="disabled"
         )
 
-        self.btn_done = ttk.Button(
+        self.btn_done = tk.Button(
             self,
             font=self.font,
             text="Izvezi",
@@ -345,7 +345,7 @@ class ComboboxStacker(tk.Frame):  # no idea on the naming
         self.frame_main.scrollable_frame.grid_rowconfigure(0, weight=1)
         self.pack_propagate(False)
 
-        self.btn_add = ttk.Button(
+        self.btn_add = tk.Button(
             self,
             text="Dodaj stupac",
             bg="lime",
@@ -391,7 +391,7 @@ class ComboboxStacker(tk.Frame):  # no idea on the naming
         self.cbx_columns[-1].grid(row=self.row, column=1, sticky="nsew")
         self.cbxs[-1].grid(row=self.row, column=3, sticky="nsew")
 
-        btn = ttk.Button(
+        btn = tk.Button(
             self.frame_main.scrollable_frame,
             font=self.font,
             text="X",
@@ -495,7 +495,7 @@ class FileTitle(tk.Toplevel):
             font=self.font
         )
 
-        self.btn_save = ttk.Button(
+        self.btn_save = tk.Button(
             self,
             bg="lime",
             fg="black",

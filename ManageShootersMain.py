@@ -69,16 +69,16 @@ class ManageShooters(tk.Frame):
 
     def shooter_change(self, shooter_id: int = None):
         if shooter_id is not None:
-            self.ShooterInFocusChange(self.current_shooter_id)
+            self.shooter_in_focus_change(self.current_shooter_id)
             return
-        self.ShooterInFocusChange(self.list_of_shooters.get_selected_item_id())
+        self.shooter_in_focus_change(self.list_of_shooters.get_selected_item_id())
 
     def place_shooter_details_frames(self):
         self.shooter_details.grid(row=0, rowspan=2, column=0, sticky="nsew")
         self.shooter_image.grid(row=0, column=1, sticky="nsew")
         self.shooter_commands.grid(row=1, column=1, columnspan=2, sticky="nsew")
 
-    def ShooterInFocusChange(self, shooter_id: int):
+    def shooter_in_focus_change(self, shooter_id: int):
         if not self.shooter_details_visible:
             self.place_shooter_details_frames()
             self.shooter_details_visible = True
@@ -86,17 +86,17 @@ class ManageShooters(tk.Frame):
         self.current_shooter_id = shooter_id
         self.shooter_image.ready_image_select()
 
-        self.LoadShooterDetails(shooter_id)
+        self.load_shooter_details(shooter_id)
 
-    def SaveShooterDetails(self):
-        self.shooter_details.SaveShooterDetails(self.current_shooter_id)
-        self.LoadShooterDetails(self.current_shooter_id)  # trigger refresh right after saving
+    def save_shooter_details(self):
+        self.shooter_details.save_shooter_details(self.current_shooter_id)
+        self.load_shooter_details(self.current_shooter_id)  # trigger refresh right after saving
 
-    def LoadShooterDetails(self, shooter_id: int):
-        self.shooter_details.UpdateShooterDetails(shooter_id)
+    def load_shooter_details(self, shooter_id: int):
+        self.shooter_details.update_shooter_details(shooter_id)
 
         shooter_basic_info = DBGetter.get_shooter_basic_info(shooter_id)
         self.shooter_commands.update_values(
             title=shooter_basic_info['Ime'] + " " + shooter_basic_info['Prezime'] + " (" + shooter_basic_info['Datum'] + ")",
         )
-        self.shooter_image.UpdateValues(shooter_id)
+        self.shooter_image.update_values(shooter_id)

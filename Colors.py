@@ -46,3 +46,6 @@ def load_colors():
 
 def save_colors():
     JSONManager.save_json(ApplicationProperties.COLORS_PATH, colors)
+
+
+# TODO: set default if not able to load .json

@@ -261,8 +261,6 @@ class Competitions(tk.Frame):
         self.frame_competitions_tree.ClearTree()
 
     def load_competitions(self):
-        print(Fonts.fonts2)
-
         self.btn_refresh.configure(state="disabled")
         self.configure(cursor="watch")
         self.clear_competitions()
@@ -306,7 +304,7 @@ class Competitions(tk.Frame):
         self.row_competitions += 1
         self._place_empty_label()
         self.row_competitions += 1
-        self.frame_competitions_tree.AddResultToTree(tree_values)
+        self.frame_competitions_tree.add_values_to_row(tree_values)
 
     def _place_empty_label(self):
         self.labels.append(

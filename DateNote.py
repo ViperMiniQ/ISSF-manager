@@ -28,8 +28,8 @@ class DateNote(tk.Frame):
 
         KeepAspectRatio.subscribe(self)
 
-    def Delete(self):
-        self.controller.DeleteNote(self.id)
+    def delete(self):
+        self.controller.delete_note(self.id)
 
     def show_menu(self, event):
         try:
@@ -37,7 +37,7 @@ class DateNote(tk.Frame):
         finally:
             self.menu.grab_release()
 
-    def SetFont(self, size: int):
+    def set_font(self, size: int):
         self.font.configure(size=size)
 
     def keep_aspect_ratio(self):

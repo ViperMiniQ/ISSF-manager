@@ -18,7 +18,6 @@ import matplotlib.widgets as widgets
 import ResultsFilter
 import Tools
 from dbcommands_rewrite import DBGetter
-import KeepAspectRatio
 
 from tkinter import messagebox
 
@@ -39,7 +38,7 @@ class PlotResults2(tk.Frame):
 
         self.style = ttk.Style()
         self.style.configure("Plot.TNotebook.Tab")
-        #self.style.layout('Plot.TNotebook.Tab', [])  # turn off tabs
+        # self.style.layout('Plot.TNotebook.Tab', [])  # turn off tabs
 
         self.frame_top = tk.Frame(self)
         self.frame_bottom = tk.Frame(self)
@@ -88,7 +87,7 @@ class PlotResults2(tk.Frame):
 
         self.pan_vertical.pack(expand=True, fill="both")
 
-    def DeleteGraphAtIndex(self, index):
+    def delete_graph_at_index(self, index):
         self.notebook_graphs.forget(self.notebook_frames[index])
         self.notebook_statistics.forget(self.notebook_statistics_frames[index])
         del self.notebook_frames[index]
@@ -109,7 +108,7 @@ class StatisticsFrame(ScrollableFrame.HorizontalAndVertical):
         self.title_lbls = []
         self.info_lbls = []
 
-    def TitleLabel(self, title, anchor="center", color="gray40"):
+    def set_title(self, title, anchor="center", color="gray40"):
         lbl = tk.Label(
             self.scrollable_frame,
             text=title,
@@ -120,7 +119,7 @@ class StatisticsFrame(ScrollableFrame.HorizontalAndVertical):
         self.title_lbls.append(lbl)
         self.title_lbls[-1].pack(side="top", fill="x")
 
-    def InfoLabel(self, info, anchor="center", color="gray40"):
+    def set_info(self, info, anchor="center", color="gray40"):
         lbl = tk.Label(
             self.scrollable_frame,
             text=info,
@@ -248,23 +247,23 @@ class Graph(tk.Frame):
         self.figure = Figure(dpi=200)
         self.figure.autofmt_xdate(rotation=25)
 
-        self.xy = self.figure.add_subplot(111, title=self.title)
+        self.xy = self.figure.add_subset_style_plot(111, title=self.title)
         self.xy.xaxis.set_major_formatter(self.formatter)
 
         self.graph = FigureCanvasTkAgg(self.figure, master=self)
         self.toolbar = NavigationToolbar2TkHR(self.graph, self)
         self.toolbar.update()
         self.graph.get_tk_widget().pack(expand=True, fill="both")
-        self.Plot()
+        self.set_style_plot()
 
     @staticmethod
-    def AdjustPlotFont(x):
+    def adjust_plot_font(x):
         mpl.rcParams.update({"font.size": int(x/150)})
 
-    def Plot(self):
+    def set_style_plot(self):
         if self.plot_active:
             return
-        self.ClearPlot()
+        self.clear_plot()
         self.lines, = self.xy.plot(self.dates_list, self.results, "-",  color="blue")
 
         self.actives.append(self.lines)
@@ -276,20 +275,20 @@ class Graph(tk.Frame):
         self.step_active = False
         self.plot_active = True
 
-    def Dots(self):
+    def trigger_dots(self):
         if self.dots_active:
-            self.RemoveDots()
+            self._remove_dots()
             self.dots_active = False
         else:
-            self.ShowDots()
+            self._show_dots()
             self.dots_active = True
 
-    def ShowDots(self):
+    def _show_dots(self):
         self.dots = self.xy.scatter(self.dates_list, self.results, color="blue")
         self.graph.draw_idle()
         mplcursors.cursor(self.dots)
 
-    def RemoveDots(self):
+    def _remove_dots(self):
         try:
             self.dots.remove()
             self.graph.draw_idle()
@@ -298,10 +297,10 @@ class Graph(tk.Frame):
         finally:
             self.dots = None
 
-    def Bar(self):
+    def set_style_bar(self):
         if self.bar_active:
             return
-        self.ClearPlot()
+        self.clear_plot()
         self.bar = self.xy.bar(self.dates_list, self.results, color="blue")
         self.actives.append(self.bar)
 
@@ -311,10 +310,10 @@ class Graph(tk.Frame):
         self.step_active = False
         self.plot_active = False
 
-    def Step(self):
+    def set_style_step(self):
         if self.step_active:
             return
-        self.ClearPlot()
+        self.clear_plot()
         self.step, = self.xy.step(self.dates_list, self.results, color="blue")
         self.actives.append(self.step)
         self.graph.draw_idle()
@@ -324,21 +323,12 @@ class Graph(tk.Frame):
         self.step_active = True
         self.plot_active = False
 
-    def ChangeColor(self):
-        pass
-
-    def ClearPlot(self):
+    def clear_plot(self):
         if not self.actives:
             return
         for active in self.actives:
             active.remove()
         self.actives = []
-
-    def AdjustFontSize(self, x, y):
-        mpl.rcParams.update({"font.size": int(x/210)})
-        for item in ([self.xy.title, self.xy.xaxis.label, self.xy.yaxis.label] + self.xy.get_xticklabels() + self.xy.get_yticklabels()):
-            item.set_fontsize(int(x/210))
-        self.xy.title.set_fontsize(int(x/210))
 
 
 class GraphControls(tk.Frame):
@@ -358,7 +348,7 @@ class GraphControls(tk.Frame):
             text="Stupčasti",
             font=self.font,
             bd=4,
-            command=lambda: self._set_graph_bar()
+            command=lambda: self._set_graph_set_style_bar()
         )
 
         self.btn_plot_graph = tk.Button(
@@ -366,7 +356,7 @@ class GraphControls(tk.Frame):
             text="Linijski",
             font=self.font,
             bd=4,
-            command=lambda: self._set_graph_plot()
+            command=lambda: self._set_graph_set_style_plot()
         )
 
         self.btn_step_graph = tk.Button(
@@ -374,7 +364,7 @@ class GraphControls(tk.Frame):
             text="Koračni",
             font=self.font,
             bd=4,
-            command=lambda: self._set_graph_step()
+            command=lambda: self._set_graph_set_style_step()
         )
 
         self.btn_dots_graph = tk.Button(
@@ -382,7 +372,7 @@ class GraphControls(tk.Frame):
             text="Točke",
             font=self.font,
             bd=4,
-            command=lambda: self._set_graph_dots()
+            command=lambda: self._set_graph_trigger_dots()
         )
 
         self.btn_bar_graph.grid(row=0, column=0, sticky="nsew")
@@ -393,17 +383,17 @@ class GraphControls(tk.Frame):
     def set_graph(self, graph: Graph):
         self.graph = graph
 
-    def _set_graph_dots(self):
-        self.graph.Dots()
+    def _set_graph_trigger_dots(self):
+        self.graph.trigger_dots()
 
-    def _set_graph_bar(self):
-        self.graph.Bar()
+    def _set_graph_set_style_bar(self):
+        self.graph.set_style_bar()
 
-    def _set_graph_plot(self):
-        self.graph.Plot()
+    def _set_graph_set_style_plot(self):
+        self.graph.set_style_plot()
 
-    def _set_graph_step(self):
-        self.graph.Step()
+    def _set_graph_set_style_step(self):
+        self.graph.set_style_step()
 
 
 class GraphManipulator(tk.Frame):
@@ -515,11 +505,11 @@ class GraphManipulator(tk.Frame):
 
         for program_id in program_ids:
             row_color = False
-            new_statistics_frame.TitleLabel(
+            new_statistics_frame.set_title(
                 DBGetter.get_program_details(program_id)["Naziv"] + ":", anchor="w", color="gray50"
             )
             for discipline_id in discipline_ids:
-                new_statistics_frame.TitleLabel(
+                new_statistics_frame.set_title(
                     " " * 8 + DBGetter.get_discipline_details(discipline_id)['Naziv'], anchor="w", color="gray60"
                 )
                 for target_id in target_ids:
@@ -536,7 +526,7 @@ class GraphManipulator(tk.Frame):
                         info_color = "gray70"
                     else:
                         info_color = "gray75"
-                    new_statistics_frame.InfoLabel(
+                    new_statistics_frame.set_info(
                         DBGetter.get_target_details(
                             target_id)['Naziv'] + ":" + " " + str(
                             max_result['Rezultat']) + " (" + Tools.SQL_date_format_to_croatian(max_result['Datum']),
@@ -599,7 +589,7 @@ class NavigationToolbar2TkHR(NavigationToolbar2Tk):
             self.subplot_tool.figure.canvas.manager.show()
             return
         plt = _safe_pyplot_import()
-        with mpl.rc_context({"toolbar": "none"}):  # No navbar for the toolfig.
+        with mpl.rc_context({"toolbar": "none"}):  # No navbar for the toolfig
             # Use new_figure_manager() instead of figure() so that the figure
             # doesn't get registered with pyplot.
             manager = plt.new_figure_manager(-1, (6, 3))
@@ -631,6 +621,7 @@ class NavigationToolbar2TkHR(NavigationToolbar2Tk):
 
 #class SubplotToolHR(widgets.SubplotTool):
 #    widgets.SubplotTool.names = ["lijevo", "dolje", "desno", "gore", "wspace", "hspace"]
+
 
 class SubplotToolHR(widgets.Widget):
     """

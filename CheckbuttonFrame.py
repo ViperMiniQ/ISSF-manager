@@ -217,9 +217,6 @@ class MultiCheckboxFrame(tk.Frame):
                 text=key,
                 style=title + self.bg_colors[self.bg_color_index] + ".TLabel"
             ).grid(row=0, column=0, sticky="nsew")
-            print(self.bg_colors[self.bg_color_index])
-            print(key)
-            print(value)
             for i, (k, v) in enumerate(value.items()):
                 if v:
                     is_selected = 1

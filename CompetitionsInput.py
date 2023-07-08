@@ -14,7 +14,7 @@ class CompetitionsInput(tk.Toplevel):
         self.parent = parent
         self.title("Natjecanje")
         self.grab_set()
-        self.protocol("WM_DELETE_WINDOW", self.ExitButton)
+        self.protocol("WM_DELETE_WINDOW", self._user_closed)
         self.modify = modify
         self.programs = DBGetter.get_programs()
         self.ent_empty_text = "Napomena:"
@@ -178,7 +178,7 @@ class CompetitionsInput(tk.Toplevel):
             text="kadeti",
             bg="red",
             variable=self.cadets,
-            command=lambda: self.ColorCategories(self.chk_cadets)
+            command=lambda: self._color_categories(self.chk_cadets)
         )
 
         self.chk_juniors = tk.Checkbutton(
@@ -187,7 +187,7 @@ class CompetitionsInput(tk.Toplevel):
             text="juniori",
             bg="red",
             variable=self.juniors,
-            command=lambda: self.ColorCategories(self.chk_juniors)
+            command=lambda: self._color_categories(self.chk_juniors)
         )
 
         self.chk_seniors = tk.Checkbutton(
@@ -196,7 +196,7 @@ class CompetitionsInput(tk.Toplevel):
             text="seniori",
             bg="red",
             variable=self.seniors,
-            command=lambda: self.ColorCategories(self.chk_seniors)
+            command=lambda: self._color_categories(self.chk_seniors)
         )
 
         self.chk_veterans = tk.Checkbutton(
@@ -205,7 +205,7 @@ class CompetitionsInput(tk.Toplevel):
             text="veterani",
             bg="red",
             variable=self.veterans,
-            command=lambda: self.ColorCategories(self.chk_veterans)
+            command=lambda: self._color_categories(self.chk_veterans)
         )
 
         self.txt_additional = tk.Text(
@@ -219,7 +219,7 @@ class CompetitionsInput(tk.Toplevel):
             bg="green",
             fg="black",
             font=self.font,
-            command=lambda: self.Add()
+            command=lambda: self._save_values_and_close()
         )
         self.grid_propagate(False)
         self.frame_note.pack_propagate(False)
@@ -265,8 +265,8 @@ class CompetitionsInput(tk.Toplevel):
 
         self.btn_add.grid(row=1, rowspan=2, column=3, sticky="nsew")
 
-        self.txt_additional.bind("<FocusIn>", self.ClearEmptyText)
-        self.txt_additional.bind("<FocusOut>", self.InsertEmptyText)
+        self.txt_additional.bind("<FocusIn>", self._clear_empty_text)
+        self.txt_additional.bind("<FocusOut>", self._insert_empty_text)
 
         if self.modify:
             self.btn_add.configure(text="Uredi")
@@ -293,33 +293,31 @@ class CompetitionsInput(tk.Toplevel):
             self.txt_additional.delete("1.0", END)
             self.txt_additional.insert("1.0", self.values["Napomena"])
             self.calendar_date.set_date(Tools.SQL_date_format_to_croatian(self.values['Datum']))  # datetime.strptime(self.values["Datum"], "%Y-%m-%d").strftime("%d. %m. %Y."))
-            self.ColorCategories(self.chk_cadets)
-            self.ColorCategories(self.chk_juniors)
-            self.ColorCategories(self.chk_seniors)
-            self.ColorCategories(self.chk_veterans)
+            self._color_categories(self.chk_cadets)
+            self._color_categories(self.chk_juniors)
+            self._color_categories(self.chk_seniors)
+            self._color_categories(self.chk_veterans)
 
-        self.InsertEmptyText(None)
+        self._insert_empty_text(None)
 
-    
-    def ExitButton(self):
+    def _user_closed(self):
         self.values = None
         self.destroy()
 
-    
-    def ColorCategories(self, widget):
+    def _color_categories(self, widget):
         value = int(widget.getvar(str(widget.cget("variable"))))
         if value:
             widget.configure(bg="green")
         else:
             widget.configure(bg="red")
 
-    def Add(self):
+    def _save_values_and_close(self):
         self.values["Naziv"] = self.title.get()
         self.values["Mjesto"] = self.place.get()
         self.values["Adresa"] = self.address.get()
         self.values["Datum"] = str(self.calendar_date.get_date())
         self.values["Program"] = self.cbx_program.get()
-        self.values["Kategorija"] = Tools.TranslateCategoriesToInt(self.GetSelectedCategoryNames())
+        self.values["Kategorija"] = Tools.TranslateCategoriesToInt(self._get_selected_categories_name())
         self.values["Napomena"] = self.txt_additional.get("1.0", END)[:-1]  # remove \n at the end of text widget
         self.values["hss_id"] = self.hss_id.get()
         if self.save:
@@ -329,20 +327,18 @@ class CompetitionsInput(tk.Toplevel):
                 self.values["id"] = DBAdder.add_competition_values(self.values)
         self.destroy()
 
-    def ClearEmptyText(self, event):
+    def _clear_empty_text(self, event):
         if self.txt_additional.get("1.0", END) == self.ent_empty_text + "\n":
             self.txt_additional.delete("1.0", END)  # delete all the text in the entry
             self.txt_additional.insert("1.0", '')  # Insert blank for user input
             self.txt_additional.configure(fg='black')
 
-    
-    def InsertEmptyText(self, event):
+    def _insert_empty_text(self, event):
         if self.txt_additional.get("1.0", END) == '\n':
             self.txt_additional.insert("1.0", self.ent_empty_text)
             self.txt_additional.configure(fg="gray20")
-
     
-    def GetSelectedCategoryNames(self):
+    def _get_selected_categories_name(self):  # move func to another module
         categories = []
         if self.cadets.get():
             categories.append("KAD")

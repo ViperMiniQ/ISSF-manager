@@ -4,7 +4,6 @@ import JSONManager
 import datetime
 import platform
 
-# READONLY files don't get dumped to disk
 
 PLATFORM = "UNKNOWN"
 PLATFORM_VERSION = 0
@@ -22,7 +21,7 @@ elif sys.platform.startswith('win32'):
     if '10' in PLATFORM_VERSION:
         LC_TIME = "hr_HR"
 
-VERSION: str = "31/12/2022"
+VERSION: str = "2023-06-29"
 
 LOCATION: str = os.path.dirname(sys.executable) if getattr(sys, "frozen", False) else \
     os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
@@ -51,7 +50,7 @@ SPLASH_FILEPATH = ""
 SPLASH_GEOMETRY = {}
 
 if _splash_config:
-    SPLASH_FILEPATH: str = _splash_config["filepath"]
+    SPLASH_FILEPATH: str = LOCATION + _splash_config["filepath"]
     SPLASH_GEOMETRY: dict = _splash_config["geometry"]
 
 CURRENT_DATE: datetime.date = datetime.date.today()  # today() at start, only main GUI should alter after for tests

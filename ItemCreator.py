@@ -6,6 +6,9 @@ from ManageArms import NewWeapon, AddNewAirCylinderToplevel
 from CompetitionsInput import CompetitionsInput
 
 
+# just dev stuff for quick testing of UI
+
+
 class ShowAll(tk.Toplevel):
     def __init__(self, parent):
         tk.Toplevel.__init__(self, parent)

@@ -341,7 +341,7 @@ class TwoListboxes(tk.Frame):
     def notify(self):
         try:
             self.notify_function()
-        except:
+        except Exception:
             pass
 
     def ask_deletion_confirmation(self, item_to_delete_name: str):
@@ -516,7 +516,7 @@ class TwoListboxes(tk.Frame):
             self.last_selected_item_index_listbox_right = self.lbx_right.curselection()[0]
             self.last_action = "up"
             self.notify()
-        except:
+        except Exception:
             pass
 
     def move_down(self, *args):
@@ -541,7 +541,7 @@ class TwoListboxes(tk.Frame):
             self.last_selected_item_index_listbox_right = self.lbx_right.curselection()[0]
             self.last_action = "down"
             self.notify()
-        except:
+        except Exception:
             pass
 
     def select_item(self, listbox: str, index: int):
@@ -553,7 +553,7 @@ class TwoListboxes(tk.Frame):
             self.lbx_left.selection_set(index)
             return
 
-    def SetFont(self, size: int):
+    def set_font(self, size: int):
         self.font.configure(size=size)
 
 

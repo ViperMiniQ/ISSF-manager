@@ -136,7 +136,7 @@ class Settings(tk.Frame):
         self.currently_selected_frame.tkraise()
         try:
             self.currently_selected_frame.save_changes()
-        except:
+        except Exception:
             pass
         self.color_buttons(name)
 

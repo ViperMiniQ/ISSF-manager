@@ -2,6 +2,8 @@ import tkinter as tk
 import Fonts
 from dbcommands_rewrite import DBGetter, DBUpdate
 
+# should mimic HSS-IS club information page
+
 
 class ClubInfo(tk.Frame):
     def __init__(self, parent, controller):

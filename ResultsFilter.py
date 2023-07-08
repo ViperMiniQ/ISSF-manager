@@ -208,7 +208,7 @@ class FilterTreeview(tk.Toplevel):
             self,
             text=u"\u2714",
             font=self.font,
-            command=lambda: self.Confirm(),
+            command=lambda: self.confirm_and_exit(),
             bg="lime",
             fg="black"
         )
@@ -229,24 +229,24 @@ class FilterTreeview(tk.Toplevel):
         self.user_closed = True
         self.destroy()
 
-    def GetProgramIdFromName(self, program: str):
+    def get_program_id_from_name(self, program: str):
         for p in self.programs:
             if p["Naziv"] == program:
                 return p["id"]
 
-    def GetTargetIdFromName(self, target: str):
+    def get_target_id_from_name(self, target: str):
         for t in self.targets:
             if t["Naziv"] == target:
                 return t["id"]
         return -1
 
-    def GetDisciplineIdFromName(self, discipline: str):
+    def get_discipline_id_from_name(self, discipline: str):
         for d in self.disciplines:
             if d["Naziv"] == discipline:
                 return d["id"]
         return -1
 
-    def GetCompetitionIdFromName(self, competition: str):
+    def get_competition_id_from_name(self, competition: str):
         for c in self.competitions:
             if c["Naziv"] == competition:
                 return c["id"]
@@ -257,28 +257,28 @@ class FilterTreeview(tk.Toplevel):
         programs = self.frame_programs.get_values()
         for key, value in programs.items():
             if value:
-                self.active_programs[key] = self.GetProgramIdFromName(key)
+                self.active_programs[key] = self.get_program_id_from_name(key)
 
     def save_targets_state(self):
         self.active_targets = {}
         targets = self.frame_targets.get_values()
         for key, value in targets.items():
             if value:
-                self.active_targets[key] = self.GetTargetIdFromName(key)
+                self.active_targets[key] = self.get_target_id_from_name(key)
 
     def save_disciplines_state(self):
         self.active_disciplines = {}
         disciplines = self.frame_disciplines.get_values()
         for key, value in disciplines.items():
             if value:
-                self.active_disciplines[key] = self.GetDisciplineIdFromName(key)
+                self.active_disciplines[key] = self.get_discipline_id_from_name(key)
 
     def save_competitions_state(self):
         self.active_competitions = {}
         competitions = self.frame_competitions.get_values()
         for key, value in competitions.items():
             if value:
-                self.active_competitions[key] = self.GetCompetitionIdFromName(key)
+                self.active_competitions[key] = self.get_competition_id_from_name(key)
 
     def save_dates(self):
         self.date["from"] = str(self.calendar_from.get_date())
@@ -294,7 +294,7 @@ class FilterTreeview(tk.Toplevel):
                 except KeyError:
                     continue
 
-    def Confirm(self):
+    def confirm_and_exit(self):
         """Returns only selected values as dict(id, name), date as dict -> ['from'], ['to'] as str"""
         self.save_shooters_state()
         self.save_dates()

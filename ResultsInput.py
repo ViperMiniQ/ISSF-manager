@@ -11,7 +11,7 @@ import Fonts
 import Colors
 from CustomWidgets import CustomBox, DateEntry2
 
-
+# TODO: ResultsInput - make PEP8 compliant
 class ResultsInput(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
@@ -90,7 +90,6 @@ class ResultsInput(tk.Frame):
         )
         self.labels.append(self.lbl_shooter)
 
-        # https://stackoverflow.com/questions/59763822/show-combobox-drop-down-while-editing-text-using-tkinter
         self.cbx_shooter = CustomBox(
             self.frame_cbxs,
             font=self.cbx_ent_font,
@@ -796,7 +795,7 @@ class ResultsInput(tk.Frame):
             if not (round(((p - int(p)) * 10), 1).is_integer()):
                 entry_r["bg"] = "red"
             return True
-        except:
+        except Exception:
             return False
 
     def Cbxdiscipline(self, event=None):
@@ -832,7 +831,7 @@ class ResultsInput(tk.Frame):
                 self.max_p = 1000
             else:
                 self.max_p = 109
-        except:
+        except Exception:
             self.max_p = 109
 
     def clear_entries(self):

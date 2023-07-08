@@ -51,7 +51,7 @@ def download_and_save_competition_documents(competition_id: int, filename: str, 
         extension = document_link.split('.')[-1]
         filename = Path(path + filename + '.' + extension)
         filename.write_bytes(document_content.content)
-    except:
+    except Exception:
         extension = ""
     finally:
         return extension
@@ -72,7 +72,6 @@ def get_competitions(utc_start: int, utc_end: int):
         link_payload += str(key) + str(value) + "&"
     link_payload = link_payload[:-1]
 
-    print(link_payload)
     web_competitions = json.loads(requests.get(url=link_payload).text)
 
     # competition = {
@@ -85,36 +84,17 @@ def get_competitions(utc_start: int, utc_end: int):
 
     competitions = []
 
-    """
-    GET /maticniPodaci/Natjecanje/ONLINEPrijava/PrijavljeniStrijelciNaNatjecanje.aspx?id=753&NATJECANJE_DISCIPLINA_id=2916 HTTP/1.1
-Host: hss-is.com
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:107.0) Gecko/20100101 Firefox/107.0
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
-Accept-Language: en-US,en;q=0.5
-Accept-Encoding: gzip, deflate, br
-Connection: keep-alive
-Cookie: _ga=GA1.2.1921024854.1664900840; ASP.NET_SessionId=jo0ceswbfm5i5l5aywb2vb5p; _gid=GA1.2.1544322758.1670859895; __shss=b9b2b283b6443c9b71bea2d821a54f0e
-Upgrade-Insecure-Requests: 1
-Sec-Fetch-Dest: document
-Sec-Fetch-Mode: navigate
-Sec-Fetch-Site: none
-Sec-Fetch-User: ?1
-
-id=753
-NATJECANJE_DISCIPLINA_id=2916"""
-
     for c in web_competitions["result"]:
         if "Natjecanje" in c["url"]:
             competition = {
                 "id": c['id'],
                 "Naziv": c['title'].split('|')[1],
-                "utc_start": c['start'],  # datetime.datetime.fromtimestamp(c['start'] // 1000),
-                "utc_end": c['end'],  # datetime.datetime.fromtimestamp(c['end'] // 1000),
+                "utc_start": c['start'], 
+                "utc_end": c['end'], 
                 "Mjesto": c['title'].split('|')[2]
             }
             competitions.append(competition)
 
-    print(competitions)
     return competitions
 
 
@@ -123,7 +103,7 @@ def get_competition_details(competition_id: int):
     soup = BeautifulSoup(page.text, "html.parser")
 
     if "Invalid attempt to read when no data is present" in soup.text:
-        raise CompetitionNotExists(competition_id)  # raise new error
+        raise CompetitionNotExists(competition_id) 
 
     name = soup.find(attrs={"class": "lang", "id": "msg_clanak"}).text
     date_n_place = soup.find(attrs={"class": "event_date"}).text
@@ -133,36 +113,10 @@ def get_competition_details(competition_id: int):
             date = date_n_place.split()[2] + date_n_place.split()[3]
         else:
             date = date_n_place.split()[0]
-    except:
+    except Exception:
         date = datetime.date.today().strftime(COMPETITION_PAGE_DATE_FORMAT)
 
     place = date_n_place.split()[-1]
     date = datetime.datetime.strptime(date, COMPETITION_PAGE_DATE_FORMAT).strftime(SQL_DATE_FORMAT)
 
     return name, date, place
-
-
-def __test1():
-    download_and_save_competition_documents(
-        competition_id=740,
-        filename='5. regija pozivno pismo',
-        path='D:/golub/',
-        document='Pozivno pismo'
-    )
-
-    download_and_save_competition_documents(
-        competition_id=740,
-        filename='5. regija bilten',
-        path='D:/golub/',
-        document='Bilten'
-    )
-
-    download_and_save_competition_documents(
-        competition_id=740,
-        filename='5. regija startne liste',
-        path='D:/golub/',
-        document='Startne liste'
-    )
-
-if __name__ == "__main__":
-    __test1()

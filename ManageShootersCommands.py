@@ -1,8 +1,6 @@
 import shutil
 import tkinter as tk
 from tkinter import filedialog
-# TODO: tkPDFViewer: change getImageData to tobytes
-# TODO: tkPDFViewer: change getPixmap to get_pixmap
 import ManageShootersMain
 import tkinter.font as tkFont
 from datetime import datetime
@@ -20,7 +18,6 @@ from tkPDFViewer import tkPDFViewer
 import pathlib
 import Tools
 from dbcommands_rewrite import DBAdder, DBGetter, DBUpdate, DBRemover
-import tkinter.ttk as ttk
 
 
 class ShooterCommands(tk.Frame):
@@ -175,7 +172,7 @@ class DoctorsPDF(tk.Frame):
 
         self.pdf_path_in_app_folder = "/Data/Lijecnicki/"
 
-        self.pdf_path = ApplicationProperties.LOCATION + self.pdf_path_in_app_folder #"/Data/Lijecnicki/"
+        self.pdf_path = ApplicationProperties.LOCATION + self.pdf_path_in_app_folder  # "/Data/Lijecnicki/"
         self.shooter_id = shooter_id
 
         self.font_btn = Fonts.fonts2["ManageShooters"]["DoctorPDFs"]["buttons"]["font"]
@@ -205,7 +202,7 @@ class DoctorsPDF(tk.Frame):
         }
 
         self.frame_tree = ResultsTree.ResultsTree(self, self, self.tree_columns, self.tree_columns_widths,
-                                            self.tree_columns_types, "ManageShootersDoctors",
+                                                  self.tree_columns_types, "ManageShootersDoctors",
                                                   Fonts.fonts2["ManageShooters"]["DoctorPDFs"]["treeview"]["font"])
         self.frame_tree.set_colors(
             even_row_bg=Colors.colors["ManageShooters"]["DoctorPDFs"]["treeview"]["even_rows"]["bg"],
@@ -313,7 +310,7 @@ class DoctorsPDF(tk.Frame):
             if pdf_id:
                 try:
                     saved_path = self.save_pdf_to_disk(window.values['pdf_path'], pdf_id)
-                except:
+                except Exception:
                     DBRemover.remove_doctors_pdf(pdf_id)
                     return
                 DBUpdate.update_shooter_doctors_pdf(
@@ -342,7 +339,7 @@ class DoctorsPDF(tk.Frame):
         if window.values:
             try:
                 saved_path = self.save_pdf_to_disk(window.values['pdf_path'], values['pdf_id'])
-            except:
+            except Exception:
                 return
             DBUpdate.update_shooter_doctors_pdf(
                 pdf_id=values["pdf_id"],
@@ -355,7 +352,6 @@ class DoctorsPDF(tk.Frame):
             self.refresh()
 
     def save_pdf_to_disk(self, path_copy_from: str, pdf_id: int):
-        filename = os.path.basename(path_copy_from)
         try:
             path_copy_to = self.pdf_path + str(pdf_id) + "_lijecnicki.pdf"
             shutil.copy(path_copy_from, path_copy_to)
@@ -374,7 +370,7 @@ class DoctorsPDF(tk.Frame):
             doctor["Strijelac"] = f"{doctor['Ime']} {doctor['Prezime']}"
             doctor["Vrijedi do"] = Tools.SQL_date_format_to_croatian(doctor["Vrijedi do"])
             doctor["Vrijedi od"] = Tools.SQL_date_format_to_croatian(doctor["Vrijedi od"])
-            self.frame_tree.AddResultToTree(doctor, False)
+            self.frame_tree.add_values_to_row(doctor, False)
         self.frame_tree.keep_aspect_ratio()
 
     def set_new_shooter(self, shooter_id: int):
@@ -411,7 +407,7 @@ class AllDoctorsPDFFrame(DoctorsPDF):
                 doctor["Strijelac"] = f"{doctor['Ime']} {doctor['Prezime']}"
                 doctor["Vrijedi do"] = Tools.SQL_date_format_to_croatian(doctor["Vrijedi do"])
                 doctor["Vrijedi od"] = Tools.SQL_date_format_to_croatian(doctor["Vrijedi od"])
-                self.frame_tree.AddResultToTree(doctor, False)
+                self.frame_tree.add_values_to_row(doctor, False)
         self.frame_tree.keep_aspect_ratio()
 
 
@@ -430,7 +426,6 @@ class AddDoctorsPDFFrame(tk.Frame):
         self.frame_dates = tk.Frame(self)
         self.frame_btns = tk.Frame(self)
 
-        #self.pdf = tkPDFViewer.ShowPdf()
         self.pdf_path = ""
 
         self.btn_choose_pdf = tk.Button(
@@ -525,20 +520,20 @@ class AddDoctorsPDFFrame(tk.Frame):
 
     def add_pdf(self, filename: str = None):
         if filename is None:
-            filename = filedialog.askopenfilename(parent=self, title="Izaberite datoteku",
-                                                    filetypes=[('PDF', ('.pdf',))])
+            filename = filedialog.askopenfilename(
+                parent=self, title="Izaberite datoteku",
+                filetypes=[('PDF', ('.pdf',))]
+            )
         if filename:
             for child in self.frame_pdf.winfo_children():
                 child.destroy()
             try:
-                #pdf = tkPDFViewer.ShowPdf()
-                #pdf.img_object_li.clear()
                 self.pdf.img_object_li.clear()
                 new_view = self.pdf.pdf_view(self.frame_pdf, pdf_location=filename, width=800, height=500)
                 new_view.pack(expand=True, fill="both")
                 self.pdf_path = filename
                 return True
-            except:
+            except Exception:
                 return False
         return False
 
@@ -660,7 +655,7 @@ class ManageShooterSeasons(tk.Toplevel):
 
         self.geometry("{}x{}".format(800, 600))
 
-        self.frame_main = AddDoctorsPDFFrame(self) #ManageShooterSeasonsFrame(self)
+        self.frame_main = AddDoctorsPDFFrame(self)
 
         if date_from:
             self.frame_main.date_from.set_date(date_from)
@@ -796,7 +791,7 @@ class ShooterSeasons(tk.Frame):
             shooter["Strijelac"] = f"{shooter['Ime']} {shooter['Prezime']}"
             shooter["Vrijedi od"] = Tools.SQL_date_format_to_croatian(shooter['Vrijedi od'])
             shooter["Vrijedi do"] = Tools.SQL_date_format_to_croatian(shooter['Vrijedi do'])
-            self.frame_tree.AddResultToTree(shooter, False)
+            self.frame_tree.add_values_to_row(shooter, False)
         self.frame_tree.keep_aspect_ratio()
 
     def delete_season(self):
@@ -835,7 +830,7 @@ class ShooterSeasons(tk.Frame):
             if pdf_id:
                 try:
                     saved_path = self.save_pdf_to_disk(window.values['pdf_path'], pdf_id)
-                except:
+                except Exception:
                     DBRemover.delete_season(pdf_id)
                     return
                 DBUpdate.update_shooter_registration(
@@ -863,7 +858,7 @@ class ShooterSeasons(tk.Frame):
         if window.values:
             try:
                 saved_path = self.save_pdf_to_disk(window.values['pdf_path'], values['pdf_id'])
-            except:
+            except Exception:
                 return
             DBUpdate.update_shooter_registration(
                 shooter_id=self.shooter_id,
@@ -876,7 +871,6 @@ class ShooterSeasons(tk.Frame):
             self.refresh()
 
     def save_pdf_to_disk(self, path_copy_from: str, pdf_id: int):
-        filename = os.path.basename(path_copy_from)
         try:
             path_copy_to = self.pdf_path + str(pdf_id) + "_bib.pdf"
             shutil.copy(path_copy_from, path_copy_to)
@@ -906,7 +900,7 @@ class AllShooterSeasonsFrame(ShooterSeasons):
                 registration["Strijelac"] = f"{registration['Ime']} {registration['Prezime']}"
                 registration["Vrijedi do"] = Tools.SQL_date_format_to_croatian(registration["Vrijedi do"])
                 registration["Vrijedi od"] = Tools.SQL_date_format_to_croatian(registration["Vrijedi od"])
-                self.frame_tree.AddResultToTree(registration, False)
+                self.frame_tree.add_values_to_row(registration, False)
         self.frame_tree.keep_aspect_ratio()
 
 
@@ -984,3 +978,5 @@ class ConfigureShooterNotifications(tk.Toplevel):
 
 # TODO: registracije.datum_do needs to be greater or EQUAL to current_date
 # TODO: scroll all the way up when resetting reminders
+# TODO: tkPDFViewer: change getImageData to tobytes
+# TODO: tkPDFViewer: change getPixmap to get_pixmap

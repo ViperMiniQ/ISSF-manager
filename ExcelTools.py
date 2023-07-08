@@ -41,7 +41,7 @@ def write_dictionaries_to_excel(dictionaries_list, sheet="Dnevnik", columns=None
             write_to_workbook_sheet(worksheet, dictionaries_list, columns)
             excel_workbook.close()
             return True
-        except:
+        except Exception:
             return False
 
 

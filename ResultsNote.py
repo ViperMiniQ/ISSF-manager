@@ -28,7 +28,7 @@ class Note(tk.Toplevel):
             fg="white",
             bg="blue",
             font=self.font_btn,
-            command=lambda: self.IncreaseFontSize()
+            command=lambda: self.increase_font_size()
         )
 
         self.btn_decrease_font_size = tk.Button(
@@ -37,7 +37,7 @@ class Note(tk.Toplevel):
             fg="white",
             bg="blue",
             font=self.font_btn,
-            command=lambda: self.DecreaseFontSize()
+            command=lambda: self.decreate_font_size()
         )
 
         self.btn_confirm = tk.Button(
@@ -47,7 +47,7 @@ class Note(tk.Toplevel):
             bg="lime",
             width=10,
             font=self.font_btn,
-            command=lambda: self.ConfirmAndExit()
+            command=lambda: self.confirm_and_exit()
         )
 
         self.txt_note.pack(side="top", expand=True, fill="both")
@@ -58,19 +58,19 @@ class Note(tk.Toplevel):
 
         self.txt_note.insert("1.0", self.text)
 
-        self.protocol("WM_DELETE_WINDOW", self.ExitButton)
+        self.protocol("WM_DELETE_WINDOW", self.user_exit)
 
-    def DecreaseFontSize(self):
+    def decreate_font_size(self):
         self.font["size"] = self.font["size"] - 1
 
-    def IncreaseFontSize(self):
+    def increase_font_size(self):
         self.font["size"] = self.font["size"] + 1
 
-    def ExitButton(self):
+    def user_exit(self):
         self.text = None
         self.destroy()
 
-    def ConfirmAndExit(self):
+    def confirm_and_exit(self):
         text = self.txt_note.get("1.0", tk.END)
         text = text[:-1]
         self.text = text

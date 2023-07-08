@@ -121,7 +121,6 @@ class Calendar(tk.Frame):
         self.btn_next_month.grid(row=0, column=11, sticky="ew")
         self.btn_next_year.grid(row=0, column=13, sticky="ew")
 
-        print("------------------xxx-----------------")
         self.create_day_buttons()
         self.update_title()
 

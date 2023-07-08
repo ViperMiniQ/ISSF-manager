@@ -1,9 +1,4 @@
 # -*- coding: UTF-8 -*-
-
-# CompetitionsPreview - prilikom preuzimanja datoteka, ukoliko postoje u memoriji, pitati korisnika je li
-# siguran da ih zeli ponovno preuzeti
-
-# dodaj tipkovnicki precac za dodavanje natjecanja u CompetitionsDownloader
 import shutil
 import tkinter.ttk as ttk
 import ApplicationProperties
@@ -12,14 +7,10 @@ import CustomWidgets
 import ItemCreator
 import JSONManager
 import Changes
-#from distutils.log import error
 import tkinter as tk
-#from tkinter import Label, StringVar, ttk
-#from tkinter.constants import X, YES
 import tkinter.font as tkFont
 import time
 from datetime import datetime
-#import os
 from tkinter import messagebox
 import matplotlib
 import logging
@@ -51,23 +42,15 @@ import KeepAspectRatio
 import Fonts
 import ctypes
 import Colors
-#from ModeCompetition import ModeCompetition
 from ClubInfo import ClubInfo
 from HTMLResults import HTMLResultsToplevel
 from dbcommands_rewrite import DBConnector, DBSetter, DBGetter, DBMisc
 
 if ApplicationProperties.PLATFORM == "WINDOWS":
     try:
-       ctypes.windll.shcore.SetProcessDpiAwareness(2)  # if your windows version >= 8.1
-    except:
+       ctypes.windll.shcore.SetProcessDpiAwareness(2)  # if windows version >= 8.1
+    except Exception:
        ctypes.windll.user32.SetProcessDPIAware()
-
-# linux
-# na linuxu sudo dpkg-reconfigure locales - izaberi hr_HR UTF-8 generate
-# koristi u kodu hr_HR.UTF-8
-# LC_TIME mora biti hr_HR.UTF-8
-
-# https://stackoverflow.com/questions/1380860/add-variables-to-tuple
 
 
 class GUI(tk.Tk):
@@ -87,7 +70,7 @@ class GUI(tk.Tk):
 
         self.withdraw()
 
-        self.splash_json_file = ApplicationProperties.LOCATION + "/Config/Splash.json"
+        self.splash_json_file = ApplicationProperties.SPLASH_FILEPATH
 
         icon_path = ApplicationProperties.LOCATION + "/Data/Ikona/ikona.png"
         icon_splash_path = ApplicationProperties.LOCATION + "/Data/Ikona/ikona.png"
@@ -99,13 +82,14 @@ class GUI(tk.Tk):
         self.update_idletasks()
         
         screen_width, screen_height = self.winfo_screenwidth(), self.winfo_screenheight()
-        splash_config = JSONManager.load_json(self.splash_json_file)
-        splash_geometry = splash_config["geometry"]
-        splash_width = splash_geometry["width"]
-        splash_height = splash_geometry["height"]
-        splash_at_x = int((screen_width - splash_width) / 2)
-        splash_at_y = int((screen_height - splash_height) / 2)
-        splash_screen = Splash.Splash(self, icon_splash_path, splash_width, splash_height, splash_at_x, splash_at_y)
+
+        if ApplicationProperties.SPLASH_FILEPATH:
+            splash_width = ApplicationProperties.SPLASH_GEOMETRY["width"]
+            splash_height = ApplicationProperties.SPLASH_GEOMETRY["height"]
+            splash_at_x = int((screen_width - splash_width) / 2)
+            splash_at_y = int((screen_height - splash_height) / 2)
+            splash_screen = Splash.Splash(self, icon_splash_path, splash_width, splash_height, splash_at_x, splash_at_y)
+
         icon = tk.PhotoImage(file=icon_path)
         self.title('GSD 1887 "LOKOMOTIVA" VINKOVCI')
         self.iconphoto(True, icon)
@@ -168,12 +152,12 @@ class GUI(tk.Tk):
         Fonts.refresh_available_fonts()
         try:
             Fonts.load_fonts2(fullscreen_size=self.winfo_vrootwidth())
-        except:
+        except Exception:
             shutil.copy(ApplicationProperties.LOCATION + "/Config/backup/Fonts2.json", ApplicationProperties.LOCATION + "/Config/Fonts2.json")
             Fonts.load_fonts2(fullscreen_size=self.winfo_vrootwidth())
         try:
             Colors.load_colors()
-        except:
+        except Exception:
             shutil.copy(ApplicationProperties.LOCATION + "/Config/backup/Colors.json", ApplicationProperties.LOCATION + "/Config/Colors.json")
             Colors.load_colors()
 
@@ -206,9 +190,6 @@ class GUI(tk.Tk):
         self.bind("<F10>", lambda event: self.activate_help())
         self.bind("<F12>", lambda event, class_name="Settings": self.ShowClass(class_name))
 
-        self.bind("<Control-Key-5>", lambda event, class_name="GeometryManager": self.ShowClass(class_name))
-        # self.bind("<Control-Key-2>", lambda event, class_name="ModeCompetition": self.ShowClass(class_name))
-        # self.bind("<Control-Key-0>", lambda event, class_name="ClubInfo": self.ShowClass(class_name))
         self.bind("<Control-Key-1>", lambda event, class_name="ManageArms": self.ShowClass(class_name))
         self.bind("<Control-Key-2>", lambda event: ManageArms.AirCylindersToplevel(self))
 
@@ -241,9 +222,7 @@ class GUI(tk.Tk):
                 Settings.Settings,
                 Plot.PlotResults2,
                 Competitions.Competitions,
-                GeometryManager,
                 ManageArms.ManageArms,
-                #ModeCompetition,
                 ClubInfo
         ):
             name = page.__name__
@@ -306,7 +285,7 @@ class GUI(tk.Tk):
         self.currently_raised_frame_name = name
         try:
             self.currently_raised_frame.in_focus()
-        except:
+        except Exception:
             pass
     
     def disable_menu(self):
@@ -324,15 +303,12 @@ class GUI(tk.Tk):
             self.after_cancel(self.after_ids.pop(i))
 
     def KeepAspectRatio(self, event):     
-        #self.container.bind("<Configure>", self.IgnoreEvent)
+        # self.container.bind("<Configure>", self.IgnoreEvent)
         if time.time() - self.last_configure_time > 2:
-            print(time.time() - self.last_configure_time)
-
             x = self.winfo_width()
             y = self.winfo_height()
 
             if self.width != x:
-                #self.container.bind("<Configure>", self.KeepAspectRatio)
                 y = int(x/self.aspect_ratio)
                 self.width = x
                 self.height = y
@@ -342,45 +318,18 @@ class GUI(tk.Tk):
                 self.height = y
             else:
                 return
-            #self.disable_menu()
             self.configure(cursor="watch")
             self.geometry("{}x{}".format(x, y))
             KeepAspectRatio.x = x
             KeepAspectRatio.y = y
             KeepAspectRatio.call_subscribers()
-            #self.update()
-            #self.update_idletasks()
             self.configure(cursor="")
-            #self.enable_menu()
-            #self.container.bind("<Configure>", self.KeepAspectRatio)
             self.clear_pending_aspect_ratio_after_ids_keep_one()
             self.last_configure_time = time.time()
 
             return
             
         self.after_ids.append(self.after(2022, lambda: self.KeepAspectRatio(None)))
-
-
-class GeometryManager(tk.Frame):
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        self.controller = controller
-        self.ent_x = tk.Entry(self)
-        self.ent_y = tk.Entry(self)
-
-        self.ent_x.place(relx=0.3, rely=0.1)
-        self.ent_y.place(relx=0.5, rely=0.1)
-
-        self.btn_confirm = ttk.Button(self, text="Postavi", command=self.set_geomentry)
-
-        self.btn_confirm.place(relx=0.4, rely=.3)
-
-        dateentry = CustomWidgets.DateEntry2(self)
-
-        dateentry.place(relx=0.7, rely=0.7)
-
-    def set_geomentry(self):
-        self.controller.set_geometry(x=self.ent_x.get(), y=2)
 
 
 class VersionInfo(tk.Toplevel):
@@ -406,7 +355,7 @@ class VersionInfo(tk.Toplevel):
 
 
 
-(c) Dominik Cindrić                dodocindro@gmail.com
+(c) Dominik Cindrić                dominik.cindric@gsd-lokomotiva-vk.hr
                                                                     
                                                                     """
 
@@ -424,11 +373,11 @@ def close_program():
     answer = messagebox.askyesnocancel("Izlaz", "Jeste li sigurni da želite izaći iz programa?")
     try:
         Fonts.save_fonts2_config()
-    except:
+    except Exception:
         pass
     try:
         Colors.save_colors()
-    except:
+    except Exception:
         pass
     if answer:
         program.destroy()
@@ -445,6 +394,7 @@ def log_exceptions(type, value, tb):
 
 
 sys.excepthook = log_exceptions
+
 
 if __name__ == "__main__":
     logging.basicConfig(filename=ApplicationProperties.LOCATION + '/debugging.log', filemode='a', level=logging.INFO)

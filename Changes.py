@@ -126,7 +126,7 @@ def call_refresh_air_cylinders():
     for o in _air_cylinders_subscribers:
         try:
             o.update_air_cylinders()
-        except:
+        except Exception:
             pass
 
 
@@ -134,7 +134,7 @@ def call_refresh_date():
     for o in _date_subscribers:
         try:
             o.update_date()
-        except:
+        except Exception:
             pass
 
 
@@ -142,7 +142,7 @@ def call_refresh_reminders():
     for o in _reminders_subscribers:
         try:
             o.update_reminders()
-        except:
+        except Exception:
             pass
 
 
@@ -150,7 +150,7 @@ def call_refresh_shooters():
     for o in _shooters_subscribers:
         try:
             o.update_shooters()
-        except:
+        except Exception:
             pass
 
 
@@ -158,7 +158,7 @@ def call_refresh_programs():
     for o in _programs_subscribers:
         try:
             o.update_programs()
-        except:
+        except Exception:
             pass
 
 
@@ -166,7 +166,7 @@ def call_refresh_disciplines():
     for o in _disciplines_subscribers:
         try:
             o.update_disciplines()
-        except:
+        except Exception:
             pass
 
 
@@ -174,7 +174,7 @@ def call_refresh_targets():
     for o in _targets_subscribers:
         try:
             o.update_targets()
-        except:
+        except Exception:
             pass
 
 
@@ -182,7 +182,7 @@ def call_refresh_competitions():
     for o in _competitions_subscribers:
         try:
             o.update_competitions()
-        except:
+        except Exception:
             pass
 
 
@@ -190,7 +190,7 @@ def call_refresh_weapons():
     for o in _weapons_subscribers:
         try:
             o.update_weapons()
-        except:
+        except Exception:
             pass
 
 def set_air_cylinders(updated: bool = True):

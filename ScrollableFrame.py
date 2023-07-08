@@ -61,7 +61,7 @@ class Vertical(tk.Frame):
                 self.canvas_width = current_canvas_width
                 self.canvas.itemconfig("frame", width=self.canvas_width)
                 self.canvas.configure(scrollregion=self.canvas.bbox("all"))
-        except:
+        except Exception:
             pass
         finally:
             self.bind("<Configure>", self.__adjust_frame_in_canvas)
@@ -72,7 +72,6 @@ class Vertical(tk.Frame):
                 return
         except AttributeError:
             return
-        print(event.widget.__class__.__name__, str(event.widget.__class__.__base__))
         try:
             widget_top = event.widget.winfo_rooty()
             widget_bottom = widget_top + event.widget.winfo_height()
@@ -148,7 +147,7 @@ class HorizontalAndVertical(tk.Frame):
         self.bind("<Configure>", self.__ignore)
         try:
             self.canvas.configure(scrollregion=self.canvas.bbox("all"))
-        except:
+        except Exception:
             pass
         finally:
             self.bind("<Configure>", self.__adjust_frame_in_canvas)

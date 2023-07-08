@@ -113,7 +113,6 @@ class Start(tk.Frame):
         self.frame_reminders.grid(row=2, column=0, columnspan=3, sticky="nsew")
 
         self.calendar = NotificationCalendar(self)
-        print("---------------------xx--------------------")
         self.calendar.grid(row=0, rowspan=2, column=2, sticky="nsew")
         self.frame_control_buttons.grid(row=0, column=0, columnspan=2, sticky="nsew")
 
@@ -269,33 +268,6 @@ class Start(tk.Frame):
                 self.upcoming_competitions.append(values)
                 continue
             self.elapsed_competitions.append(values)
-
-    def WindowWhereDate(self, date):
-        notifications = list(
-            filter(
-                lambda reminder: reminder["date"] == date,
-                self.NPIN_expires
-                + self.NPIN_expired
-                + self.doctor_expired
-                + self.doctor_expires
-                + self.elapsed_competitions
-                + self.upcoming_competitions
-                + self.others
-                + self.birthdays)
-        )
-        if not notifications:
-            return
-        date = datetime.strptime(date, "%Y-%m-%d").strftime("%d.%m.%Y.")
-        notifications_window = Notification.WindowNotifications(self, date, 800, 450)
-        for notification in notifications:
-            notifications_window._place_reminder(
-                title=notification["title"],
-                text=notification["text"],
-                frame_color=notification["color"],
-                txt_color=notification["txt_color"]
-            )
-        notifications_window.focus()
-        notifications_window.wait_window()
 
     def clear_reminders(self):
         self.clear_all_reminders()
